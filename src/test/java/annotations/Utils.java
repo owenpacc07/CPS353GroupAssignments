@@ -14,7 +14,9 @@ public class Utils {
         return result;
     }
 
-    private static void loadClassesRec(File f, List<Class<?>> result, String packageName) throws Exception {
+    private static void loadClassesRec(File f,
+    		List<Class<?>> result,
+    		String packageName) throws Exception {
         if (f.isDirectory()) {
             if (!packageName.isEmpty()) {
                 packageName += ".";
