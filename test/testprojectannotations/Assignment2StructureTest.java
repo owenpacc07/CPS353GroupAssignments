@@ -1,4 +1,4 @@
-package project.annotations;
+package testprojectannotations;
 
 import java.io.File;
 import java.lang.annotation.Annotation;
@@ -13,12 +13,12 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import project.annotations.ConceptualAPI;
-import project.annotations.ConceptualAPIPrototype;
-import project.annotations.NetworkAPI;
-import project.annotations.NetworkAPIPrototype;
-import project.annotations.ProcessAPI;
-import project.annotations.ProcessAPIPrototype;
+import projectannotations.ConceptualAPI;
+import projectannotations.ConceptualAPIPrototype;
+import projectannotations.NetworkAPI;
+import projectannotations.NetworkAPIPrototype;
+import projectannotations.ProcessAPI;
+import projectannotations.ProcessAPIPrototype;
 
 /**
  * This test checks that all 3 APIs exist in the 'src' folder as interfaces, with the appropriate annotations, and that they all

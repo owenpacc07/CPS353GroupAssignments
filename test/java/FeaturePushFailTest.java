@@ -1,3 +1,5 @@
+package java;
+
 public class FeaturePushFailTest {
 
 	public static void main(String[] args) {
