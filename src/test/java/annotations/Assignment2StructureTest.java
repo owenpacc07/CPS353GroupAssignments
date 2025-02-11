@@ -86,7 +86,8 @@ public class Assignment2StructureTest {
 	
 	@ParameterizedTest
 	@ValueSource(classes = {NetworkAPI.class, ProcessAPI.class, ConceptualAPI.class })
-	public void checkAnnotationsExist(Class<? extends Annotation> apiAnnotation) throws Exception {
+	public void checkAnnotationsExist(Class<? extends Annotation> apiAnnotation)
+			throws Exception {
 		int numApisFound = 0;
 		
 		for (Class<?> clazz : Utils.loadAllClasses()) {
