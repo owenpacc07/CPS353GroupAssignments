@@ -21,5 +21,9 @@
   -Separate N from Add/Mult "."
 
   -Output ";"
+
+
+![System Diagram](https://github.com/owenpacc07/CPS353GroupAssignments/blob/main/images/systemDiagram.png?raw=true)
+
   
 
