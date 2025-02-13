@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 
  * Implementation of the DataStorageProcessAPI that calculates minimal product-sum numbers.
  * A number N is called a product-sum number if it can be expressed as both:
  * 1. A sum of k numbers: N = a1 + a2 + ... + ak
