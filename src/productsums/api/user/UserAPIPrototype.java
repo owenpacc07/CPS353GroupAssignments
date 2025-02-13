@@ -17,8 +17,7 @@ Specify delimiters, if not default are provided
 */
 	@Override 
 	@NetworkAPIPrototype 
-	public UserResponse user(UserRequest request)
-	{
+	public UserResponse user(UserRequest request) {
 		String inputSource = request.getInputSource();
 		String outputSource = request.getOutputSource();
 		String delimiters = request.getDelimiters();
