@@ -1,7 +1,6 @@
 package productsums.api.compute;
 
 import productsums.models.compute.EngineInput;
-import productsums.models.compute.EngineOutput;
 import projectannotations.ConceptualAPIPrototype;
 
 
