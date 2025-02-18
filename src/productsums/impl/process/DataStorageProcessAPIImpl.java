@@ -15,30 +15,26 @@ import java.util.Map;
 
 public class DataStorageProcessAPIImpl implements DataStorageProcessAPI {
 
-    // Reference to the EngineProcessAPI
     private EngineProcessAPI engineProcessAPI;
 
+    // Default constructor to instantiat the prototype
     public DataStorageProcessAPIImpl() {
-        // Instantiate the EngineProcessAPI (could be injected instead)
         this.engineProcessAPI = new EngineProcessPrototype();
     }
 
-    /**
-     * Processes the data by:
-     * 1. Validating the request.
-     * 2. Optionally reading input from a file.
-     * 3. Delegating computation of product-sum numbers to the EngineProcessAPI.
-     * 4. Optionally writing results to an output file.
-     */
+    // test friendly constructor to accept an EngineProcessAPI instance
+    public DataStorageProcessAPIImpl(EngineProcessAPI engineProcessAPI) {
+        this.engineProcessAPI = engineProcessAPI;
+    }
+
     @Override
     public DataStorageProcessResponse processData(DataStorageProcessRequest request) {
         validateRequest(request);
 
-        // Optional: read input data if an input source is provided.
-        String inputData = null;
+        //read from file
         if (request.getInputSource() != null && !request.getInputSource().isEmpty()) {
             try {
-                inputData = FileReaderUtil.readFile(request.getInputSource());
+                String inputData = FileReaderUtil.readFile(request.getInputSource());
                 System.out.println("Successfully read input from: " + request.getInputSource());
             } catch (RuntimeException e) {
                 System.err.println("Failed to read input file: " + e.getMessage());
@@ -46,18 +42,15 @@ public class DataStorageProcessAPIImpl implements DataStorageProcessAPI {
             }
         }
 
-        // For each k in the range, delegate computation to EngineProcessAPI.
+        // Hand the computation over to the  EngineProcessAPI
         Map<Integer, Integer> productSumResults = new HashMap<>();
         for (int k = request.getMinK(); k <= request.getMaxK(); k++) {
-            // Create an EngineInput for the current k (assuming EngineInput has a constructor that accepts k)
             EngineInput engineInput = new EngineInput(k);
             EngineOutput output = engineProcessAPI.compute(engineInput);
-            // Extract the computed product-sum number from the output.
-            // (Assuming EngineOutput has a method getAnswer() returning the computed number.)
             productSumResults.put(k, output.answer());
         }
 
-        // Optional: write the results to an output file if an output destination is provided.
+        // write to a file
         if (request.getOutputDestination() != null && !request.getOutputDestination().isEmpty()) {
             try {
                 FileWriterUtil.writeFile(request.getOutputDestination(), productSumResults.toString());
@@ -71,12 +64,6 @@ public class DataStorageProcessAPIImpl implements DataStorageProcessAPI {
         return new DataStorageProcessResponse(productSumResults);
     }
 
-    /**
-     * Validates the incoming request ensuring:
-     * - The request is not null.
-     * - minK is positive.
-     * - maxK is greater than or equal to minK.
-     */
     private void validateRequest(DataStorageProcessRequest request) {
         if (request == null) {
             throw new IllegalArgumentException("Request cannot be null");
