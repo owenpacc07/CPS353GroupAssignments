@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -59,8 +60,11 @@ public class Assignment2StructureTest {
 			}
 			
 		}
-		if (numPrototypesFound != 1) {
-			errors.add("No (or multiple) class method with the " + prototypeAnnotation.getSimpleName() + " annotation was found in 'src'");
+		if (numPrototypesFound > 1) {
+			errors.add("Multiple class methods with the " + prototypeAnnotation.getSimpleName() + " annotation was found in 'src'");
+		}
+		if (numPrototypesFound < 1) {
+			errors.add("No class method with the " + prototypeAnnotation.getSimpleName() + " annotation was found in 'src'");
 		}
 		if (!errors.isEmpty()) {
 			throw new IllegalStateException(errors.toString());
@@ -90,8 +94,13 @@ public class Assignment2StructureTest {
 		
 		List<String> errors = new ArrayList<>();
 		
-		if (numApisFound != 1) {
-			errors.add("No (or multiple) interface found with annotation " + apiAnnotation.getSimpleName() + " in 'src'");
+		if (numApisFound < 1) {
+			errors.add("No interface found with annotation " + apiAnnotation.getSimpleName() + " in 'src'");
+			errors.add("Keep in mind that all APIs must be interfaces (not classes), and that each API annotation"
+					+ " must be on a different interface in its own .java file");
+		}
+		if (numApisFound > 1) {
+			errors.add("Multiple interfaces found with annotation " + apiAnnotation.getSimpleName() + " in 'src'");
 			errors.add("Keep in mind that all APIs must be interfaces (not classes), and that each API annotation"
 					+ " must be on a different interface in its own .java file");
 		}

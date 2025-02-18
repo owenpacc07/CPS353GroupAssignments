@@ -23,7 +23,7 @@ public class Utils {
             for (File child : f.listFiles()) {
                 loadClassesRec(child, result, packageName);
             }
-        } else if (f.getName().endsWith(".java")) {
+        } else if (f.getName().endsWith(".java") && !f.getName().contains("package-info")) {
             String className = f.getName().substring(0, f.getName().length() - 5);
             String fullName = packageName + (packageName.isEmpty() ? "" : ".") + className;
             result.add(Utils.class.getClassLoader().loadClass(fullName));
