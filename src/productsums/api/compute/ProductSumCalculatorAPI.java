@@ -2,7 +2,6 @@ package productsums.api.compute;
 
 import productsums.models.compute.ComputeOutput;
 import projectannotations.ConceptualAPI;
-import projectannotations.ConceptualAPIPrototype;
 
 @ConceptualAPI
 public interface ProductSumCalculatorAPI {
