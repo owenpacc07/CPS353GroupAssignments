@@ -3,7 +3,6 @@ package productsums.api.compute;
 import productsums.models.compute.EngineInput;
 import productsums.models.compute.EngineOutput;
 import projectannotations.ConceptualAPI;
-import projectannotations.ConceptualAPIPrototype;
 
 @ConceptualAPI
 public interface EngineProcessAPI {
@@ -13,4 +12,5 @@ public interface EngineProcessAPI {
 	 * @return A record containing the input index in the original request, the actual productSum number, and it's factors.
 	 */
 	public EngineOutput compute(EngineInput request);
+	//public EngineOutput compute(EngineProcessAPI request);
 }
