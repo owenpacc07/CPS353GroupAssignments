@@ -9,19 +9,16 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * 'index' parameter is k
- * in the minimal product-sum problem. It uses backtracking
- * to find the minimal product-sum number for that k.
+ * The "index" parameter is k
+ * in the minimal product sum problem. this uses backtracking
+ * to find the minimal product sum number for that k.
  */
 public class ProductSumsCalculatorAPIImpl implements ProductSumCalculatorAPI {
 
     @Override
     public ComputeOutput getNthProductSum(int index) {
-        // index is our k value
         int productSumNumber = generateMinimalProductSum(index);
 
-        // Currently, we return an empty list for factors.
-        // If you need actual factors, you'll have to record them in backtracking.
         List<Integer> factors = new ArrayList<>();
 
         return new ComputeOutput(productSumNumber, factors);
