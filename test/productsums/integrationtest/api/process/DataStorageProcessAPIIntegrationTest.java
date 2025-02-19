@@ -2,8 +2,13 @@ package productsums.integrationtest.api.process;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.mock;
 
 import productsums.api.compute.EngineProcessAPI;
 import productsums.impl.process.DataStorageProcessAPIImpl;
@@ -13,7 +18,6 @@ import productsums.models.compute.EngineInput;
 import productsums.models.compute.EngineOutput;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /**
