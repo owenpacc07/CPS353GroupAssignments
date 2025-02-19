@@ -22,7 +22,7 @@ import java.util.Map;
  * Smoke tests for the DataStorageProcessAPI.
  * Tests basic functionality and validation for the api
  */
-public class DataStorageProcessAPITest {
+public class DataStorageProcessAPISmokeTest {
 
     @Mock
     private EngineProcessAPI mockEngineAPI;
