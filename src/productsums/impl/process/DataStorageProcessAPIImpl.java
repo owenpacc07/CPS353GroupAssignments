@@ -1,78 +1,87 @@
 package productsums.impl.process;
 
 import productsums.api.process.DataStorageProcessAPI;
+import productsums.api.compute.EngineProcessAPI;
 import productsums.models.process.DataStorageProcessRequest;
 import productsums.models.process.DataStorageProcessResponse;
-import productsums.api.compute.EngineProcessAPI;
-import productsums.api.compute.EngineProcessPrototype;
-import productsums.models.compute.EngineInput;
-import productsums.models.compute.EngineOutput;
 import productsums.utils.FileReaderUtil;
 import productsums.utils.FileWriterUtil;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
+/**
+ * Implementation of the DataStorageProcessAPI that calculates minimal product-sum numbers.
+ */
 public class DataStorageProcessAPIImpl implements DataStorageProcessAPI {
+    private final EngineProcessAPI engineAPI;
 
-    private EngineProcessAPI engineProcessAPI;
-
-    // Default constructor to instantiat the prototype
-    public DataStorageProcessAPIImpl() {
-        this.engineProcessAPI = new EngineProcessPrototype();
-    }
-
-    // test friendly constructor to accept an EngineProcessAPI instance
-    public DataStorageProcessAPIImpl(EngineProcessAPI engineProcessAPI) {
-        this.engineProcessAPI = engineProcessAPI;
+    public DataStorageProcessAPIImpl(EngineProcessAPI engineAPI) {
+        this.engineAPI = engineAPI;
     }
 
     @Override
     public DataStorageProcessResponse processData(DataStorageProcessRequest request) {
-        validateRequest(request);
+        int minK = request.getMinK();
+        int maxK = request.getMaxK();
+        String inputSource = request.getInputSource();
+        String outputDestination = request.getOutputDestination();
 
-        //read from file
-        if (request.getInputSource() != null && !request.getInputSource().isEmpty()) {
-            try {
-                String inputData = FileReaderUtil.readFile(request.getInputSource());
-                System.out.println("Successfully read input from: " + request.getInputSource());
-            } catch (RuntimeException e) {
-                System.err.println("Failed to read input file: " + e.getMessage());
-                throw new RuntimeException("Data processing failed due to input error", e);
-            }
+        //read some input data if needed
+        if (inputSource != null && !inputSource.isEmpty()) {
+            System.out.println("Reading input data from: " + inputSource);
+            String fileContent = FileReaderUtil.readFile(inputSource);
+            System.out.println("Input Data: " + fileContent);
         }
 
-        // Hand the computation over to the  EngineProcessAPI
-        Map<Integer, Integer> productSumResults = new HashMap<>();
-        for (int k = request.getMinK(); k <= request.getMaxK(); k++) {
-            EngineInput engineInput = new EngineInput(k);
-            EngineOutput output = engineProcessAPI.compute(engineInput);
-            productSumResults.put(k, output.answer());
-        }
+        //Compute minimal product-sum numbers
+        Map<Integer, Integer> productSumResults = computeProductSumNumbers(minK, maxK);
 
-        // write to a file
-        if (request.getOutputDestination() != null && !request.getOutputDestination().isEmpty()) {
-            try {
-                FileWriterUtil.writeFile(request.getOutputDestination(), productSumResults.toString());
-                System.out.println("Successfully wrote results to: " + request.getOutputDestination());
-            } catch (RuntimeException e) {
-                System.err.println("Failed to write output file: " + e.getMessage());
-                throw new RuntimeException("Data processing failed due to output error", e);
-            }
+        //write results to the output destination if given
+        if (outputDestination != null && !outputDestination.isEmpty()) {
+            System.out.println("Writing results to: " + outputDestination);
+            FileWriterUtil.writeFile(outputDestination, productSumResults.toString());
         }
 
         return new DataStorageProcessResponse(productSumResults);
     }
 
-    private void validateRequest(DataStorageProcessRequest request) {
-        if (request == null) {
-            throw new IllegalArgumentException("Request cannot be null");
+    //Computes minimal product-sum numbers for k values in the given range.
+    private Map<Integer, Integer> computeProductSumNumbers(int minK, int maxK) {
+        Map<Integer, Integer> productSumNumbers = new HashMap<>();
+
+        for (int k = minK; k <= maxK; k++) {
+            int minProductSum = findMinimalProductSum(k);
+            productSumNumbers.put(k, minProductSum);
         }
-        if (request.getMinK() < 1) {
-            throw new IllegalArgumentException("minK must be positive");
+
+        return productSumNumbers;
+    }
+
+    //Finds the smallest N that can be expressed as both the sum and product of k numbers.
+    private int findMinimalProductSum(int k) {
+        return generateMinimalProductSum(k);
+    }
+
+    //Generates the minimal product-sum number for a given k using backtracking.
+    private int generateMinimalProductSum(int k) {
+        Set<Integer> productSumNumbers = new HashSet<>();
+        backtrack(1, 0, 1, k, productSumNumbers);
+        return productSumNumbers.stream().min(Integer::compareTo).orElse(k * 2);
+    }
+
+    //Recursive function to generate minimal product-sum numbers.
+    private void backtrack(int sum, int count, int product, int k, Set<Integer> results) {
+        if (count > 1 && sum == product) {
+            results.add(sum);
         }
-        if (request.getMaxK() < request.getMinK()) {
-            throw new IllegalArgumentException("maxK must be greater than or equal to minK");
+        if (count >= k || sum > product * 2) {
+            return;
+        }
+        for (int i = 1; i <= product * 2; i++) {
+            backtrack(sum + i, count + 1, product * i, k, results);
         }
     }
 }
