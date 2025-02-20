@@ -12,7 +12,6 @@ import org.mockito.Mockito;
 
 import productsums.api.user.UserAPI;
 import productsums.models.user.UserRequest;
-import productsums.models.user.UserResponse;
 
 public class UserToEngineTest {
 	private UserAPI uapi;
@@ -43,8 +42,9 @@ public class UserToEngineTest {
 		assertEqualsGeneric(25, decomp.input(), 25);
 		assertEqualsGeneric(288, decomp.output(), 25);
 		LinkedList<Integer> list = new LinkedList<>();
-		for (int i = 0; i < 22; i++)
+		for (int i = 0; i < 22; i++) {
 			list.add(1);
+		}
 		list.addAll(List.of(2,4,4));
 		assertEqualsGeneric(list, decomp.factors(), 25);
 	}
@@ -64,8 +64,9 @@ public class UserToEngineTest {
 		
 		arr = arr[1].split("[,]");
 		ArrayList<Integer> list = new ArrayList<>();
-		for (int i = 0; i < arr.length; i++)
+		for (int i = 0; i < arr.length; i++) {
 			list.add(Integer.parseInt(arr[i]));
+		}
 		return new Decomposition(input,output,list);
 	}
 	public record Decomposition(int input, int output, List<Integer> factors) {}

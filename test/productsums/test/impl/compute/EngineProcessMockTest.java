@@ -1,6 +1,6 @@
 package productsums.test.impl.compute;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -33,7 +33,7 @@ public class EngineProcessMockTest {
 	
 	@ParameterizedTest
 	@MethodSource("provideTestCases")
-	public void EngineProcessAPISmokeTest(int input, int answer, List<Integer> factors) {
+	public void engineProcessAPISmokeTest(int input, int answer, List<Integer> factors) {
 		EngineOutput result = api.compute(new EngineInput(4));
 		assertEquals(result.answer(), answer,
 				String.format("EngineProcess didn't return correct value. Expected: %d Actual: %d", result.answer(), answer));
