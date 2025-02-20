@@ -12,14 +12,14 @@ sourceSets {
 	    srcDirs = ['protobuf']
 	  }
 	  java {
-		srcDirs = ['src/main/java',
+		srcDirs = ['src',
 					'build/generated/source/proto/main/grpc',
 					'build/generated/source/proto/main/java']
 	  }
 	}
 	test {
 	  java {
-	     srcDirs = ['src/test/java']
+	     srcDirs = ['test']
 	  }
     }
 }
@@ -33,6 +33,7 @@ test {
     
       filter {
         excludeTestsMatching "project.annotations.Assignment*"
+        setFailOnNoMatchingTests(false)
       }
 }
 

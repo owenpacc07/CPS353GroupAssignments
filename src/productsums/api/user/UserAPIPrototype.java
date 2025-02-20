@@ -1,5 +1,6 @@
 package productsums.api.user;
 
+import productsums.models.user.UserRequest;
 import projectannotations.NetworkAPIPrototype;
 import productsums.models.user.UserRequest;
 import productsums.models.user.UserResponse;
@@ -7,6 +8,9 @@ import productsums.models.user.UserResponse;
 
 
 public class UserAPIPrototype implements UserAPI {
+  
+public class UserAPIPrototype{
+
 
 /*
 User Should:
@@ -14,6 +18,7 @@ Provide input source
 Provide output source
 Specify delimiters, if not default are provided
 */
+  
 	@Override 
 	@NetworkAPIPrototype 
 	public UserResponse user(UserRequest request) {
@@ -21,6 +26,9 @@ Specify delimiters, if not default are provided
 		String outputSource = request.getOutputSource();
 		String delimiters = request.getDelimiters();
 		return null;
+
+	@NetworkAPIPrototype 
+	public void user(UserAPI api) {
 		
 	}
 	
