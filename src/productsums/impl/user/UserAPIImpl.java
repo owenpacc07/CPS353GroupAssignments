@@ -4,6 +4,7 @@ import projectannotations.NetworkAPI;
 import projectannotations.NetworkAPIPrototype;
 import productsums.models.user.UserRequest;
 import productsums.models.user.UserResponse;
+import productsums.api.user.UserAPI;
  
 
 public class UserAPIImpl implements UserAPI {
@@ -17,6 +18,6 @@ public class UserAPIImpl implements UserAPI {
 	public UserResponse user(UserRequest request) {
 		
 		//Empty Response
-		return UserResponse();
+		return new UserResponse();
 	}
 }
