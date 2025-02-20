@@ -18,6 +18,6 @@ public class UserAPIImpl implements UserAPI {
 	public UserResponse user(UserRequest request) {
 		
 		//Empty Response
-		return new UserResponse();
+		return null;
 	}
 }
