@@ -7,5 +7,7 @@ import productsums.models.user.UserResponse;
 
 @NetworkAPI
 public interface UserAPI {
+      
+  @NetworkAPIPrototype 
 	UserResponse user(UserRequest request);
 }
