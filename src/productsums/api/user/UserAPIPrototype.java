@@ -9,9 +9,6 @@ import productsums.models.user.UserResponse;
 
 public class UserAPIPrototype implements UserAPI {
   
-public class UserAPIPrototype{
-
-
 /*
 User Should:
 Provide input source 
@@ -26,10 +23,6 @@ Specify delimiters, if not default are provided
 		String outputSource = request.getOutputSource();
 		String delimiters = request.getDelimiters();
 		return null;
-
-	@NetworkAPIPrototype 
-	public void user(UserAPI api) {
-		
 	}
 	
 }
