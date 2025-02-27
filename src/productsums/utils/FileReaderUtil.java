@@ -7,15 +7,15 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 /**
- * Utility class for file reading operations.
- * Provides a simple interface to read file contents while handling exceptions
+ * Class used for file reading operations.
+ * Provides an interface to read file contents while handling exceptions
  * and providing meaningful error messages.
  */
 public class FileReaderUtil {
     /**
      * Reads the entire contents of a file into a String.
-     * @param filePath Path to the file to read
-     * @return String containing the file contents
+     * @param filePath: Path to the file to read
+     * @return String: containing the file contents
      * @throws RuntimeException if there's an error reading the file
      */
     public static String readFile(String filePath) {
