@@ -12,5 +12,4 @@ public interface EngineProcessAPI {
 	 * @return A record containing the input index in the original request, the actual productSum number, and it's factors.
 	 */
 	public EngineOutput compute(EngineInput request);
-
 }

@@ -5,12 +5,18 @@ import productsums.models.compute.EngineInput;
 import productsums.models.compute.EngineOutput;
 import java.util.Collections;
 
-public class EngineProcessAPIImpl implements EngineProcessAPI{
-	public EngineProcessAPIImpl() {
-	
-	}
-	@Override
-	public EngineOutput compute(EngineInput request) {
-		return new EngineOutput(0,0, Collections.singletonList(0));
-	}
+public class EngineProcessAPIImpl implements EngineProcessAPI {
+   
+    // private ProductSumCalculatorAPI calcAPI;
+    // public EngineProcessAPIImpl(ProductSumCalculatorAPI calcAPI) {
+    //     this.calcAPI = calcAPI;
+    // }
+
+    public EngineProcessAPIImpl() {
+    }
+
+    @Override
+    public EngineOutput compute(EngineInput request) {
+        return new EngineOutput(0, 0, Collections.singletonList(0));
+    }
 }
