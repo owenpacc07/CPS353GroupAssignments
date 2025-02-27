@@ -89,4 +89,34 @@ public class DataStorageProcessAPIIntegrationTest {
         assertEquals(4, results.get(2));
         assertEquals(6, results.get(3));
     }
+
+    @Test
+    void testProcessingWithNullPaths() {
+        // Setup request with null paths but valid number range
+        DataStorageProcessRequest request = new DataStorageProcessRequest(2, 5, null, null);
+        
+        // Mock the engine responses for numbers 2 through 5
+        // each number  returns a result of N*2 for predictable testing
+        when(mockEngineAPI.compute(any(EngineInput.class)))
+            .thenReturn(new EngineOutput(2, 4, new ArrayList<>()))
+            .thenReturn(new EngineOutput(3, 6, new ArrayList<>()))
+            .thenReturn(new EngineOutput(4, 8, new ArrayList<>()))
+            .thenReturn(new EngineOutput(5, 10, new ArrayList<>()));
+
+        DataStorageProcessResponse response = dataStorageAPI.processData(request);
+
+        // check the response and its contents
+        assertNotNull(response, "Response should not be null");
+        Map<Integer, Integer> results = response.getProductSumResults();
+        
+        // Verify the size and contents of the results map
+        assertEquals(4, results.size(), "Should have results for all 4 numbers in range");
+        assertEquals(4, results.get(2), "Product sum for 2 should be 4");
+        assertEquals(6, results.get(3), "Product sum for 3 should be 6");
+        assertEquals(8, results.get(4), "Product sum for 4 should be 8");
+        assertEquals(10, results.get(5), "Product sum for 5 should be 10");
+        
+        // check that the engine was called exactly once for each number in the range
+        verify(mockEngineAPI, times(4)).compute(any(EngineInput.class));
+    }
 }
