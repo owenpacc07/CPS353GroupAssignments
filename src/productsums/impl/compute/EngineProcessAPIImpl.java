@@ -9,8 +9,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class EngineProcessAPIImpl implements EngineProcessAPI {
-	private final int MAX_SEARCH = 1000000;
-	private final List<Integer> PRIMES = 
+	private final int maxSearch = 1000000;
+	private final List<Integer> primes = 
 			List.of(1,2,3,5,7,11,13,17,19,23,29,31,37,41,43,47);
 	
 	
@@ -22,8 +22,9 @@ public class EngineProcessAPIImpl implements EngineProcessAPI {
     public EngineOutput compute(EngineInput request) {
     	Result temp = calculateKNum(request.inputIndex());
     	List<Integer> ones = new LinkedList<>();
-    	for (int i = 0; i < (temp.k - temp.factors.size()); i++)
+    	for (int i = 0; i < (temp.k - temp.factors.size()); i++) {
     		ones.add(1);
+    	}
     	ones.addAll(temp.factors);
         return new EngineOutput(request.inputIndex(), temp.k, ones);
     }
@@ -64,8 +65,9 @@ public class EngineProcessAPIImpl implements EngineProcessAPI {
 			temp.addAll(listOfFactors);
 			temp.addAll(largest);
 			temp.sort(Comparator.naturalOrder());
-			if (!list.contains(temp))
+			if (!list.contains(temp)) {
 				list.add(temp);
+			}
 		}
 		return true;
 	}
@@ -80,20 +82,22 @@ public class EngineProcessAPIImpl implements EngineProcessAPI {
 	 * @throws IllegalArgumentException k must not be less than one. The algorithm is designed for natural numbers.
 	 */
 	public Result calculateKNum(int k) throws ArithmeticException, IllegalArgumentException{
-		if (k < 1)
+		if (k < 1) {
 			throw new IllegalArgumentException("Product sum cannot be calculated for non-natural numbers.");
+		}
 		int curr = 4;
-		while (curr < MAX_SEARCH) {
+		while (curr < maxSearch) {
 			LinkedList<LinkedList<Integer>> factorlist = factors(curr);
 			boolean factorsCanBeSplit = true;
 			while (factorsCanBeSplit && factorlist.size() > 0) {
-				if (validateK(factorlist.get(0), k, curr))
+				if (validateK(factorlist.get(0), k, curr)) {
 					return new Result(factorlist.get(0),k,curr);
+				}
 				factorsCanBeSplit = splitLargest(factorlist);
 			}
 			curr++;
 		}
-		throw new ArithmeticException("Bounds for function calculation exceeded. No number under " + MAX_SEARCH + " is a product-sum for number k " + k);
+		throw new ArithmeticException("Bounds for function calculation exceeded. No number under " + maxSearch + " is a product-sum for number k " + k);
 	}
     
 	/*
@@ -101,7 +105,7 @@ public class EngineProcessAPIImpl implements EngineProcessAPI {
 	 */
     
 	public boolean isPrime(int i) {
-		return PRIMES.stream()
+		return primes.stream()
 				.anyMatch((item)->item == i);
 	}
 	public boolean allPrime(LinkedList<Integer> l) {
