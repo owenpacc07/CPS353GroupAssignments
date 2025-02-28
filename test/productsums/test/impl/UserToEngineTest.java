@@ -1,5 +1,9 @@
 package productsums.test.impl;
 
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,8 +29,13 @@ public class UserToEngineTest {
 	@Test
 	public void testPipeline() {
 		var request = Mockito.mock(UserRequest.class);
-		Mockito.when(request.getInputSource()).thenReturn("[1,10,25]");
-		String[] results = uapi.user(request).getResult().split("[;]");
+		Mockito.when(request.getInputSource()).thenReturn(new StringReader("1,10,25"));
+		StringWriter writer = new StringWriter();
+		Mockito.when(request.getOutputSource()).thenReturn(new PrintWriter(writer));
+		Mockito.when(request.getDelimiters()).thenReturn(List.of(','));
+		
+		uapi.user(request);
+		String[] results = writer.toString().split("[;]");
 		
 		Decomposition decomp = decompose(results[0]);
 		assertEqualsGeneric(1, decomp.input(), 1);
