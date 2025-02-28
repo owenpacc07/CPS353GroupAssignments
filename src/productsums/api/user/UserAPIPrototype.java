@@ -44,8 +44,7 @@ Specify delimiters, if not default are provided
 		if(response != null) {
 			
 			System.out.println("User request passed.");
-		}
-		else {
+		}else {
 			
 			System.out.println("User request failed.");
 		}

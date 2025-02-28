@@ -1,4 +1,4 @@
-package productsums.smoketest.api.User;
+package productsums.smoketest.api.user;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
