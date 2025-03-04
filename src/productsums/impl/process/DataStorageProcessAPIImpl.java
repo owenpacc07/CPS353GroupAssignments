@@ -110,14 +110,14 @@ public class DataStorageProcessAPIImpl implements DataStorageProcessAPI {
 
     //Recursive function to generate minimal product-sum numbers.
     private void backtrack(int sum, int count, int product, int k, Set<Integer> results) {
-        //If we have k numbers, check if the sum and product are equal
+    	//If we have k numbers, check if the sum and product are equal
         if (count > 1 && sum == product) {
             results.add(sum);
         }
-        if (count >= k || sum > product * 2) {    //If we have more than k numbers or the sum exceeds the product, stop
+        if (count >= k || sum > product * 2) {	//If we have more than k numbers or the sum exceeds the product, stop
             return;
         }
-        for (int i = 1; i <= product * 2; i++) {    //Try all numbers from 1 to product*2
+        for (int i = 1; i <= product * 2; i++) {	//Try all numbers from 1 to product*2
             backtrack(sum + i, count + 1, product * i, k, results);
         }
     }
