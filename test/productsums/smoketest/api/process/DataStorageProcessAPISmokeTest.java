@@ -12,6 +12,7 @@ import static org.mockito.Mockito.verify;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import productsums.api.compute.EngineProcessAPI;
 import productsums.impl.process.DataStorageProcessAPIImpl;
@@ -82,5 +83,32 @@ public class DataStorageProcessAPISmokeTest {
         // test negative k
         assertThrows(IllegalArgumentException.class, () -> 
             dataStorageAPI.processData(new DataStorageProcessRequest(-1, 3, null, null)));
+    }
+
+    /**
+     * Tests file path validation in the API.
+     * Verifies that correct exceptions are thrown for invalid file paths.
+     */
+    @Test
+    void testFilePathValidation() {
+        // Test with non-existent input file
+        DataStorageProcessRequest requestWithBadInput = 
+            new DataStorageProcessRequest(2, 4, "nonexistentfile.txt", null);
+        IllegalArgumentException inputException = assertThrows(
+            IllegalArgumentException.class,
+            () -> dataStorageAPI.processData(requestWithBadInput),
+            "Should throw exception for non-existent input file"
+        );
+        assertTrue(inputException.getMessage().contains("Input file does not exist"));
+
+        // Test with invalid output file path (using a path that should be non-writable)
+        DataStorageProcessRequest requestWithBadOutput = 
+            new DataStorageProcessRequest(2, 4, null, "/invalid/path/output.txt");
+        IllegalArgumentException outputException = assertThrows(
+            IllegalArgumentException.class,
+            () -> dataStorageAPI.processData(requestWithBadOutput),
+            "Should throw exception for invalid output file path"
+        );
+        assertTrue(outputException.getMessage().contains("Cannot write to output file"));
     }
 }

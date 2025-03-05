@@ -7,6 +7,9 @@ import productsums.models.process.DataStorageProcessResponse;
 import productsums.utils.FileReaderUtil;
 import productsums.utils.FileWriterUtil;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -24,10 +27,43 @@ public class DataStorageProcessAPIImpl implements DataStorageProcessAPI {
 
     @Override
     public DataStorageProcessResponse processData(DataStorageProcessRequest request) {
+        // Validate request object
+        if (request == null) {
+            throw new IllegalArgumentException("Request cannot be null");
+        }
+
         int minK = request.getMinK();
         int maxK = request.getMaxK();
+
+        // Validate k range values
+        if (minK < 2) {
+            throw new IllegalArgumentException("minK must be at least 2");
+        }
+        if (maxK < minK) {
+            throw new IllegalArgumentException("maxK must be greater than or equal to minK");
+        }
+        if (maxK > 12000) {
+            throw new IllegalArgumentException("maxK cannot exceed 12000");
+        }
+
         String inputSource = request.getInputSource();
         String outputDestination = request.getOutputDestination();
+
+        // Validate file paths if provided
+        if (inputSource != null && !inputSource.isEmpty()) {
+            if (!Files.exists(Paths.get(inputSource))) {
+                throw new IllegalArgumentException("Input file does not exist: " + inputSource);
+            }
+        }
+
+        if (outputDestination != null && !outputDestination.isEmpty()) {
+            try {
+                // Verify we can create/write to the output file
+                Files.write(Paths.get(outputDestination), new byte[0]);
+            } catch (IOException e) {
+                throw new IllegalArgumentException("Cannot write to output file: " + outputDestination);
+            }
+        }
 
         //read some input data if needed
         if (inputSource != null && !inputSource.isEmpty()) {
