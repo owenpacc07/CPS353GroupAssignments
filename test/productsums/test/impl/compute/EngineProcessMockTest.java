@@ -34,7 +34,7 @@ public class EngineProcessMockTest {
 	@ParameterizedTest
 	@MethodSource("provideTestCases")
 	public void engineProcessAPISmokeTest(int input, int answer, List<Integer> factors) {
-		EngineOutput result = api.compute(new EngineInput(4));
+		EngineOutput result = api.compute(new EngineInput(input));
 		assertEquals(result.answer(), answer,
 				String.format("EngineProcess didn't return correct value. Expected: %d Actual: %d", result.answer(), answer));
 		assertEquals(result.factors(), factors,
