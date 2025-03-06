@@ -38,8 +38,8 @@ public class DataStorageProcessAPIIntegrationTest {
     @Test
     void testFileOperationsWithData() {
         // Arrange
-        String inputPath = "test_input.txt";
-        String outputPath = "test_output.txt";
+        String inputPath = "test/productsums/test/resources/input.txt";
+        String outputPath = "test/productsums/test/resources/output.txt";
         DataStorageProcessRequest request = new DataStorageProcessRequest(2, 4, inputPath, outputPath);
         
         when(mockEngineAPI.compute(any(EngineInput.class)))
@@ -76,7 +76,7 @@ public class DataStorageProcessAPIIntegrationTest {
     @Test
     void testDataProcessingFlow() {
         // Testing data flow from input to output
-        DataStorageProcessRequest request = new DataStorageProcessRequest(2, 3, "input.txt", "output.txt");
+        DataStorageProcessRequest request = new DataStorageProcessRequest(2, 3, "test/productsums/test/resources/input.txt", "test/productsums/test/resources/output.txt");
         when(mockEngineAPI.compute(any(EngineInput.class)))
             .thenReturn(new EngineOutput(2, 4, new ArrayList<>()))
             .thenReturn(new EngineOutput(3, 6, new ArrayList<>()));
@@ -84,6 +84,7 @@ public class DataStorageProcessAPIIntegrationTest {
         DataStorageProcessResponse response = dataStorageAPI.processData(request);
 
         assertNotNull(response);
+        //TODO i don't even know what this 2d map is supposed to be
         Map<Integer, Integer> results = response.getProductSumResults();
         assertEquals(2, results.size());
         assertEquals(4, results.get(2));

@@ -26,7 +26,7 @@ public class EngineProcessAPIImpl implements EngineProcessAPI {
     		ones.add(1);
     	}
     	ones.addAll(temp.factors);
-        return new EngineOutput(request.inputIndex(), temp.k, ones);
+        return new EngineOutput(request.inputIndex(), temp.curr, ones);
     }
     
     /**
@@ -120,5 +120,5 @@ public class EngineProcessAPIImpl implements EngineProcessAPI {
 	public boolean validateK(LinkedList<Integer> factors, int k, int num) {
 		return k - factors.size() == num - sum(factors);
 	}
-	public record Result(LinkedList<Integer> factors, int curr, int k) {}
+	public record Result(LinkedList<Integer> factors, int k, int curr) {}
 }
