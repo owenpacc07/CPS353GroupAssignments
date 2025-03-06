@@ -57,7 +57,6 @@ public class DataStorageProcessAPIIntegrationTest {
         verify(mockEngineAPI, times(3)).compute(any(EngineInput.class));
     }
 
-    /*
     @Test
     void testLargeRange() {
         // Test the full problem range of 2 to 12000
@@ -71,7 +70,7 @@ public class DataStorageProcessAPIIntegrationTest {
         assertEquals(11999, response.getProductSumResults().size());
         verify(mockEngineAPI, times(11999)).compute(any(EngineInput.class));
     }
-    */
+    
 
     @Test
     void testDataProcessingFlow() {
