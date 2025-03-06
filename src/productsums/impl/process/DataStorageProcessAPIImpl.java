@@ -2,6 +2,7 @@ package productsums.impl.process;
 
 import productsums.api.process.DataStorageProcessAPI;
 import productsums.api.compute.EngineProcessAPI;
+import productsums.models.compute.EngineInput;
 import productsums.models.process.DataStorageProcessRequest;
 import productsums.models.process.DataStorageProcessResponse;
 import productsums.utils.FileReaderUtil;
@@ -89,36 +90,38 @@ public class DataStorageProcessAPIImpl implements DataStorageProcessAPI {
         Map<Integer, Integer> productSumNumbers = new HashMap<>();
 
         for (int k = minK; k <= maxK; k++) {
-            int minProductSum = findMinimalProductSum(k);
+            int minProductSum = engineAPI.compute(new EngineInput(k)).answer();
             productSumNumbers.put(k, minProductSum);
         }
 
         return productSumNumbers;
     }
 
-    //Finds the smallest N that can be expressed as both the sum and product of k numbers.
-    private int findMinimalProductSum(int k) {
-        return generateMinimalProductSum(k);
-    }
-
-    //Generates the minimal product-sum number for a given k using backtracking.
-    private int generateMinimalProductSum(int k) {
-        Set<Integer> productSumNumbers = new HashSet<>();
-        backtrack(1, 0, 1, k, productSumNumbers);
-        return productSumNumbers.stream().min(Integer::compareTo).orElse(k * 2);
-    }
-
-    //Recursive function to generate minimal product-sum numbers.
-    private void backtrack(int sum, int count, int product, int k, Set<Integer> results) {
-    	//If we have k numbers, check if the sum and product are equal
-        if (count > 1 && sum == product) {
-            results.add(sum);
-        }
-        if (count >= k || sum > product * 2) {	//If we have more than k numbers or the sum exceeds the product, stop
-            return;
-        }
-        for (int i = 1; i <= product * 2; i++) {	//Try all numbers from 1 to product*2
-            backtrack(sum + i, count + 1, product * i, k, results);
-        }
-    }
+    //These methods don't need to exist the compute engine should be responsible for this.
+    
+//    //Finds the smallest N that can be expressed as both the sum and product of k numbers.
+//    private int findMinimalProductSum(int k) {
+//        return generateMinimalProductSum(k);
+//    }
+//
+//    //Generates the minimal product-sum number for a given k using backtracking.
+//    private int generateMinimalProductSum(int k) {
+//        Set<Integer> productSumNumbers = new HashSet<>();
+//        backtrack(1, 0, 1, k, productSumNumbers);
+//        return productSumNumbers.stream().min(Integer::compareTo).orElse(k * 2);
+//    }
+//
+//    //Recursive function to generate minimal product-sum numbers.
+//    private void backtrack(int sum, int count, int product, int k, Set<Integer> results) {
+//    	//If we have k numbers, check if the sum and product are equal
+//        if (count > 1 && sum == product) {
+//            results.add(sum);
+//        }
+//        if (count >= k || sum > product * 2) {	//If we have more than k numbers or the sum exceeds the product, stop
+//            return;
+//        }
+//        for (int i = 1; i <= product * 2; i++) {	//Try all numbers from 1 to product*2
+//            backtrack(sum + i, count + 1, product * i, k, results);
+//        }
+//    }
 }
