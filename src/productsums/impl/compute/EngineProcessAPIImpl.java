@@ -3,17 +3,13 @@ package productsums.impl.compute;
 import productsums.api.compute.EngineProcessAPI;
 import productsums.models.compute.EngineInput;
 import productsums.models.compute.EngineOutput;
+import productsums.utils.Constants;
 
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
 public class EngineProcessAPIImpl implements EngineProcessAPI {
-	private final int maxSearch = 1000000;
-	private final List<Integer> primes = 
-			List.of(1,2,3,5,7,11,13,17,19,23,29,31,37,41,43,47);
-	
-	
     public EngineProcessAPIImpl() {
     	
     }
@@ -86,7 +82,7 @@ public class EngineProcessAPIImpl implements EngineProcessAPI {
 			throw new IllegalArgumentException("Product sum cannot be calculated for non-natural numbers.");
 		}
 		int curr = 4;
-		while (curr < maxSearch) {
+		while (curr > -1) {
 			LinkedList<LinkedList<Integer>> factorlist = factors(curr);
 			boolean factorsCanBeSplit = true;
 			while (factorsCanBeSplit && factorlist.size() > 0) {
@@ -97,15 +93,14 @@ public class EngineProcessAPIImpl implements EngineProcessAPI {
 			}
 			curr++;
 		}
-		throw new ArithmeticException("Bounds for function calculation exceeded. No number under " + maxSearch + " is a product-sum for number k " + k);
+		throw new ArithmeticException("Product-sum number for " + k + " cannot be represented by an integer. Integer overflow has occured where should not be possible.");
 	}
-    
 	/*
 	 * 						Single line functions
 	 */
     
 	public boolean isPrime(int i) {
-		return primes.stream()
+		return Constants.primes.stream()
 				.anyMatch((item)->item == i);
 	}
 	public boolean allPrime(LinkedList<Integer> l) {

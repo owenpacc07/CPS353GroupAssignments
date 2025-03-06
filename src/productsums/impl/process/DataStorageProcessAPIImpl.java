@@ -5,6 +5,7 @@ import productsums.api.compute.EngineProcessAPI;
 import productsums.models.compute.EngineInput;
 import productsums.models.process.DataStorageProcessRequest;
 import productsums.models.process.DataStorageProcessResponse;
+import productsums.utils.Constants;
 import productsums.utils.FileReaderUtil;
 import productsums.utils.FileWriterUtil;
 
@@ -37,14 +38,14 @@ public class DataStorageProcessAPIImpl implements DataStorageProcessAPI {
         int maxK = request.getMaxK();
 
         // Validate k range values
-        if (minK < 2) {
-            throw new IllegalArgumentException("minK must be at least 2");
+        if (minK < Constants.MINIMUM_K) {
+            throw new IllegalArgumentException("minK must be at least " + Constants.MINIMUM_K);
         }
         if (maxK < minK) {
             throw new IllegalArgumentException("maxK must be greater than or equal to minK");
         }
-        if (maxK > 12000) {
-            throw new IllegalArgumentException("maxK cannot exceed 12000");
+        if (maxK > Constants.MAXIMUM_K) {
+            throw new IllegalArgumentException("maxK cannot exceed " + Constants.MAXIMUM_K);
         }
 
         String inputSource = request.getInputSource();
