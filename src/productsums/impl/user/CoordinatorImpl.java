@@ -31,92 +31,89 @@ public class CoordinatorImpl implements UserAPI {
 	@Override 
 	//Parameter Validation
 	public UserResponse user(UserRequest request) {
-		try {
+	try {
 			
-			if(request == null) {
+		if(request == null) {
 			
-				throw new IllegalArgumentException("UserRequest cannot be null.");
-			}
+			throw new IllegalArgumentException("UserRequest cannot be null.");
+		}
 		
-			if(request.getInputSource() == null || request.getInputSource().isEmpty()) {
+		if(request.getInputSource() == null || request.getInputSource().isEmpty()) {
 			
-				throw new IllegalArgumentException("Input cannot be null or empty");
-			}
+			throw new IllegalArgumentException("Input cannot be null or empty");
+		}
 		
-			if(request.getOutputSource() == null || request.getOutputSource().isEmpty()) {
+		if(request.getOutputSource() == null || request.getOutputSource().isEmpty()) {
 			
-				throw new IllegalArgumentException("Output cannot be null or empty");
-			}
+			throw new IllegalArgumentException("Output cannot be null or empty");
+		}
 		
-			//Reads integers from DataStorage and passes to Compute Engine
-			DataStorageProcessRequest storageRequest = new DataStorageProcessRequest(2,100,request.getInputSource(), request.getOutputSource());
+		//Reads integers from DataStorage and passes to Compute Engine
+		DataStorageProcessRequest storageRequest = new DataStorageProcessRequest(2,100,request.getInputSource(), request.getOutputSource());
 		
-			DataStorageProcessResponse storageResponse = dataStorage.processData(storageRequest);
+		DataStorageProcessResponse storageResponse = dataStorage.processData(storageRequest);
 		
-			//DataStorage Response Validation
-			if(storageResponse == null || storageResponse.getProductSumResults() == null) {
+		//DataStorage Response Validation
+		if(storageResponse == null || storageResponse.getProductSumResults() == null) {
 			
-				return errorMessage("DataStorage contains no results or just null.");
-			}
+			return errorMessage("DataStorage contains no results or just null.");
+		}
 		
-			Map<Integer, Integer> productSumResults = storageResponse.getProductSumResults();
+		Map<Integer, Integer> productSumResults = storageResponse.getProductSumResults();
 		
-			List<Integer> keys = new ArrayList<>(productSumResults.keySet());
-			List<EngineOutput> computedResults = new ArrayList<>();
+		List<Integer> keys = new ArrayList<>(productSumResults.keySet());
+		List<EngineOutput> computedResults = new ArrayList<>();
 		
-			for(int i = 0; i < keys.size(); i++) {
+		for(int i = 0; i < keys.size(); i++) {
 			
-				int k = keys.get(i);
+			int k = keys.get(i);
 			
-				//Validating input before passed to Engine
-				if(k <= 0) {
+			//Validating input before passed to Engine
+			if(k <= 0) {
 				
-					return errorMessage("k value must be larger than 0.");
-				}
+				return errorMessage("k value must be larger than 0.");
+			}
 			
-				EngineInput input = new EngineInput(k);
-				EngineOutput output = computeEngine.compute(input);
+			EngineInput input = new EngineInput(k);
+			EngineOutput output = computeEngine.compute(input);
 			
-				//Validating output from Engine
-				if(output == null) {
+			//Validating output from Engine
+			if(output == null) {
 				
-					return errorMessage("Engine return null as the input.");
-				}
-			
-				computedResults.add(output);
+				return errorMessage("Engine return null as the input.");
 			}
-		
-			//Final results before return validation
-			if(computedResults.isEmpty()) {
 			
-				return errorMessage("Computation finished. No appropiate results generated.");
-			}
-		
-			Map<Integer, Integer> finalResults = productSumResults; 
-		
-			//Storage Request 
-			dataStorage.processData(new DataStorageProcessRequest(2, 100, null, request.getOutputSource()));
-		
-			//Final Results shown
-			return new UserResponseModel("Computation worked. Results: " + finalResults);
-		}
-		//Handling Validation
-		catch(IllegalArgumentException e) {
-			
-			return errorMessage("Bad Request: " + e.getMessage());
-		}
-		//Handling DataStorage or Engine
-		catch(IllegalStateException e) {
-			
-			return errorMessage("Error with processing: " + e.getMessage());
-		}
-		//Handling Unexpected Exceptions 
-		catch(Exception e) {
-			
-			return errorMessage("Unexpected Error: " + e.getMessage());
+			computedResults.add(output);
 		}
 		
+		//Final results before return validation
+		if(computedResults.isEmpty()) {
+			
+			return errorMessage("Computation finished. No appropiate results generated.");
+		}
+		
+		Map<Integer, Integer> finalResults = productSumResults; 
+		
+		//Storage Request 
+		dataStorage.processData(new DataStorageProcessRequest(2, 100, null, request.getOutputSource()));
+		
+		//Final Results shown
+		return new UserResponseModel("Computation worked. Results: " + finalResults);
+	  
+	} catch(IllegalArgumentException e) {
+			
+		return errorMessage("Bad Request: " + e.getMessage()); //Handling Validation
+	  
+	} catch(IllegalStateException e) {
+			
+		return errorMessage("Error with processing: " + e.getMessage()); //Handling DataStorage or Engine
+	
+	} catch(Exception e) {
+			
+		return errorMessage("Unexpected Error: " + e.getMessage()); //Handling Unexpected Exceptions
 	}
+		
+}
 	//Generalizing error output for our system 
 	private UserResponse errorMessage(String message) {
 				
