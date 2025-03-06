@@ -100,7 +100,7 @@ public class EngineProcessAPIImpl implements EngineProcessAPI {
 	 */
     
 	public boolean isPrime(int i) {
-		return Constants.primes.stream()
+		return Constants.PRIMES.stream()
 				.anyMatch((item)->item == i);
 	}
 	public boolean allPrime(LinkedList<Integer> l) {

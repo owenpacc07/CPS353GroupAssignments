@@ -14,6 +14,7 @@ import productsums.api.compute.EngineProcessAPI;
 import productsums.impl.process.DataStorageProcessAPIImpl;
 import productsums.models.process.DataStorageProcessRequest;
 import productsums.models.process.DataStorageProcessResponse;
+import productsums.utils.Constants;
 import productsums.models.compute.EngineInput;
 import productsums.models.compute.EngineOutput;
 
@@ -60,15 +61,15 @@ public class DataStorageProcessAPIIntegrationTest {
     @Test
     void testLargeRange() {
         // Test the full problem range of 2 to 12000
-        DataStorageProcessRequest request = new DataStorageProcessRequest(2, 12000, null, null);
+        DataStorageProcessRequest request = new DataStorageProcessRequest(Constants.MINIMUM_K, Constants.MAXIMUM_K, null, null);
         when(mockEngineAPI.compute(any(EngineInput.class)))
             .thenReturn(new EngineOutput(0, 4, new ArrayList<>()));
 
         DataStorageProcessResponse response = dataStorageAPI.processData(request);
 
         assertNotNull(response);
-        assertEquals(11999, response.getProductSumResults().size());
-        verify(mockEngineAPI, times(11999)).compute(any(EngineInput.class));
+        assertEquals(Constants.MAXIMUM_K-1, response.getProductSumResults().size());
+        verify(mockEngineAPI, times(Constants.MAXIMUM_K-1)).compute(any(EngineInput.class));
     }
     
 
