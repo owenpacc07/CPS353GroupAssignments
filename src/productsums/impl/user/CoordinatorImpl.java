@@ -18,14 +18,12 @@ import java.util.Objects;
 
 public class CoordinatorImpl implements UserAPI {
 	
-	private final DataStorageProcessAPI dataStorage; 
-	private final EngineProcessAPI computeEngine;
+	private final DataStorageProcessAPI dataStorage;
 	
 	//Parameter Validation 
-	public CoordinatorImpl(DataStorageProcessAPI dataStorage, EngineProcessAPI computeEngine) {
+	public CoordinatorImpl(DataStorageProcessAPI dataStorage) {
 		
 		this.dataStorage = Objects.requireNonNull(dataStorage, "DataStorage cannot be null.");
-		this.computeEngine = Objects.requireNonNull(computeEngine, "ComputeEngine cannot be null.");
 	}
 	
 	@Override 
@@ -59,46 +57,10 @@ public class CoordinatorImpl implements UserAPI {
 			return errorMessage("DataStorage contains no results or just null.");
 		}
 		
-		Map<Integer, Integer> productSumResults = storageResponse.getProductSumResults();
 		
-		List<Integer> keys = new ArrayList<>(productSumResults.keySet());
-		List<EngineOutput> computedResults = new ArrayList<>();
-		
-		for(int i = 0; i < keys.size(); i++) {
-			
-			int k = keys.get(i);
-			
-			//Validating input before passed to Engine
-			if(k <= 0) {
-				
-				return errorMessage("k value must be larger than 0.");
-			}
-			
-			EngineInput input = new EngineInput(k);
-			EngineOutput output = computeEngine.compute(input);
-			
-			//Validating output from Engine
-			if(output == null) {
-				
-				return errorMessage("Engine return null as the input.");
-			}
-			
-			computedResults.add(output);
-		}
-		
-		//Final results before return validation
-		if(computedResults.isEmpty()) {
-			
-			return errorMessage("Computation finished. No appropiate results generated.");
-		}
-		
-		Map<Integer, Integer> finalResults = productSumResults; 
-		
-		//Storage Request 
-		dataStorage.processData(new DataStorageProcessRequest(2, 100, null, request.getOutputSource()));
 		
 		//Final Results shown
-		return new UserResponseModel("Computation worked. Results: " + finalResults);
+		return new UserResponseModel("Computation worked. Results: " + storageResponse.getProductSumResults());
 	  
 	} catch(IllegalArgumentException e) {
 			
