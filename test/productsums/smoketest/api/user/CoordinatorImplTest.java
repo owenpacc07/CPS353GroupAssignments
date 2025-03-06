@@ -10,7 +10,6 @@ import productsums.api.user.UserAPI;
 import productsums.impl.user.CoordinatorImpl;
 import productsums.api.process.DataStorageProcessAPI;
 import productsums.models.process.DataStorageProcessRequest;
-import productsums.api.compute.EngineProcessAPI;
 import productsums.models.user.UserRequest;
 import productsums.models.user.UserResponse;
 
@@ -24,7 +23,6 @@ public class CoordinatorImplTest {
 	public void smokeTest() {
 		
 		DataStorageProcessAPI mockDataStorage = mock(DataStorageProcessAPI.class);
-		EngineProcessAPI mockComputeEngine = mock(EngineProcessAPI.class);
 		UserRequest mockRequest = mock(UserRequest.class);
 		
 		when(mockRequest.getInputSource()).thenReturn("mockInput.txt");
@@ -36,11 +34,11 @@ public class CoordinatorImplTest {
 		mockProductSumResults.put(5, 10);
 		when(mockDataStorage.processData(any(DataStorageProcessRequest.class))).thenReturn(new productsums.models.process.DataStorageProcessResponse(mockProductSumResults));
 		
-		UserAPI userAPI = new CoordinatorImpl(mockDataStorage, mockComputeEngine);
+		UserAPI userAPI = new CoordinatorImpl(mockDataStorage);
 		UserResponse result = userAPI.user(mockRequest);
 		
 		System.out.println("Response: " + result.getResult());
 		Assertions.assertNotNull(result, "No null present.");
-		Assertions.assertTrue(result.getResult().contains("Computation worked. Results:"), "Successful Response");
+		Assertions.assertTrue(result.getResult().contains("Computation worked. Results:"), result.getResult());
 	}
 }

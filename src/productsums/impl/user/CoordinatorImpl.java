@@ -14,49 +14,72 @@ import productsums.models.compute.EngineOutput;
 import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class CoordinatorImpl implements UserAPI {
 	
-	private final DataStorageProcessAPI dataStorage; 
-	private final EngineProcessAPI computeEngine;
+	private final DataStorageProcessAPI dataStorage;
 	
-	public CoordinatorImpl(DataStorageProcessAPI dataStorage, EngineProcessAPI computeEngine) {
+	//Parameter Validation 
+	public CoordinatorImpl(DataStorageProcessAPI dataStorage) {
 		
-		this.dataStorage = dataStorage;
-		this.computeEngine = computeEngine;
+		this.dataStorage = Objects.requireNonNull(dataStorage, "DataStorage cannot be null.");
 	}
 	
 	@Override 
+	//Parameter Validation
 	public UserResponse user(UserRequest request) {
-		//Reads integers from DataStorage and passes them to compute engine
-		//Results need to be readable as well as written back to dataStorage 
+	try {
+			
+		if(request == null) {
+			
+			throw new IllegalArgumentException("UserRequest cannot be null.");
+		}
 		
+		if(request.getInputSource() == null || request.getInputSource().isEmpty()) {
+			
+			throw new IllegalArgumentException("Input cannot be null or empty");
+		}
+		
+		if(request.getOutputSource() == null || request.getOutputSource().isEmpty()) {
+			
+			throw new IllegalArgumentException("Output cannot be null or empty");
+		}
+		
+		//Reads integers from DataStorage and passes to Compute Engine
 		DataStorageProcessRequest storageRequest = new DataStorageProcessRequest(2,100,request.getInputSource(), request.getOutputSource());
 		
 		DataStorageProcessResponse storageResponse = dataStorage.processData(storageRequest);
-		Map<Integer, Integer> productSumResults = storageResponse.getProductSumResults();
 		
-		List<Integer> keys = new ArrayList<>(productSumResults.keySet());
-		List<EngineOutput> computedResults = new ArrayList<>();
-		
-		for(int i = 0; i < keys.size(); i++) {
+		//DataStorage Response Validation
+		if(storageResponse == null || storageResponse.getProductSumResults() == null) {
 			
-			int k = keys.get(i);
-			
-			EngineInput input = new EngineInput(k);
-			EngineOutput output = computeEngine.compute(input);
-			
-			computedResults.add(output);
+			return errorMessage("DataStorage contains no results or just null.");
 		}
 		
-		Map<Integer, Integer> finalResults = productSumResults; 
-		
-		dataStorage.processData(new DataStorageProcessRequest(2, 100, null, request.getOutputSource()));
-		
-		return new UserResponseModel("Computation worked. Results: " + finalResults);
 		
 		
+		//Final Results shown
+		return new UserResponseModel("Computation worked. Results: " + storageResponse.getProductSumResults());
+	  
+	} catch(IllegalArgumentException e) {
+			
+		return errorMessage("Bad Request: " + e.getMessage()); //Handling Validation
+	  
+	} catch(IllegalStateException e) {
+			
+		return errorMessage("Error with processing: " + e.getMessage()); //Handling DataStorage or Engine
+	
+	} catch(Exception e) {
+			
+		return errorMessage("Unexpected Error: " + e.getMessage()); //Handling Unexpected Exceptions
+	}
 		
+}
+	//Generalizing error output for our system 
+	private UserResponse errorMessage(String message) {
+				
+			return new UserResponseModel("Error: " + message);
 	}
 
 }
