@@ -73,16 +73,22 @@ public class DataStorageProcessAPISmokeTest {
     @Test
     void testInvalidInputs() {
         //Testing null request
-        assertThrows(IllegalArgumentException.class, () -> 
-            dataStorageAPI.processData(null));
+    	assertTrue(dataStorageAPI.processData(null) == DataStorageProcessResponse.nullRequest);
+//        assertThrows(IllegalArgumentException.class, () -> 
+//            dataStorageAPI.processData(null));
 
         // Test invalid k range
-        assertThrows(IllegalArgumentException.class, () -> 
-            dataStorageAPI.processData(new DataStorageProcessRequest(5, 3, null, null)));
+    	assertTrue(dataStorageAPI.processData(new DataStorageProcessRequest(5, 3, null, null))
+    			== DataStorageProcessResponse.improperKRange);
+//        assertThrows(IllegalArgumentException.class, () -> 
+//            dataStorageAPI.processData(new DataStorageProcessRequest(5, 3, null, null)));
 
         // test negative k
-        assertThrows(IllegalArgumentException.class, () -> 
-            dataStorageAPI.processData(new DataStorageProcessRequest(-1, 3, null, null)));
+    	assertTrue(dataStorageAPI.processData(new DataStorageProcessRequest(-1, 3, null, null))
+    			== DataStorageProcessResponse.improperKRange);
+    	
+//        assertThrows(IllegalArgumentException.class, () -> 
+//            dataStorageAPI.processData(new DataStorageProcessRequest(-1, 3, null, null)));
     }
 
     /**
@@ -94,21 +100,15 @@ public class DataStorageProcessAPISmokeTest {
         // Test with non-existent input file
         DataStorageProcessRequest requestWithBadInput = 
             new DataStorageProcessRequest(2, 4, "nonexistentfile.txt", null);
-        IllegalArgumentException inputException = assertThrows(
-            IllegalArgumentException.class,
-            () -> dataStorageAPI.processData(requestWithBadInput),
-            "Should throw exception for non-existent input file"
-        );
-        assertTrue(inputException.getMessage().contains("Input file does not exist"));
+        assertTrue(DataStorageProcessResponse.IOFailure == dataStorageAPI.processData(requestWithBadInput),
+        		"Should throw exception for invalid input file path");
+//        assertTrue(inputException.getMessage().contains("Input file does not exist"));
 
         // Test with invalid output file path (using a path that should be non-writable)
         DataStorageProcessRequest requestWithBadOutput = 
             new DataStorageProcessRequest(2, 4, null, "/invalid/path/output.txt");
-        IllegalArgumentException outputException = assertThrows(
-            IllegalArgumentException.class,
-            () -> dataStorageAPI.processData(requestWithBadOutput),
-            "Should throw exception for invalid output file path"
-        );
-        assertTrue(outputException.getMessage().contains("Cannot write to output file"));
+        assertTrue(DataStorageProcessResponse.IOFailure == dataStorageAPI.processData(requestWithBadOutput),
+        		"Should throw exception for invalid output file path");
+//        assertTrue(outputException.getMessage().contains("Cannot write to output file"));
     }
 }
