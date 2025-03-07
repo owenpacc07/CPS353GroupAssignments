@@ -16,8 +16,9 @@ public class EngineProcessAPIImpl implements EngineProcessAPI {
 
     @Override
     public EngineOutput compute(EngineInput request) {
-    	if (request == null)
+    	if (request == null) {
     		return EngineOutput.nullPointer();
+    	}
     	Result temp = null; 
     	try {
     		temp = calculateKNum(request.inputIndex());
