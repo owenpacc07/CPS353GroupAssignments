@@ -22,4 +22,21 @@ public class DataStorageProcessResponse {
     public String toString() {
         return "Product-Sum Results: " + productSumResults.toString();
     }
+    
+    
+    /*
+     * 				Sentinel Values
+     */
+    
+    public static final DataStorageProcessResponse nullRequest = 
+    		new DataStorageProcessResponse(null);
+    public static final DataStorageProcessResponse improperKRange = 
+    		new DataStorageProcessResponse(null);
+    public static final DataStorageProcessResponse IOFailure = 
+    		new DataStorageProcessResponse(null);
+    public boolean isSentinel() {
+    	return this == nullRequest ||
+    			this == improperKRange ||
+    			this == IOFailure;
+    }
 }

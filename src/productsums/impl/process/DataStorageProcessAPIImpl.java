@@ -31,7 +31,8 @@ public class DataStorageProcessAPIImpl implements DataStorageProcessAPI {
     public DataStorageProcessResponse processData(DataStorageProcessRequest request) {
         // Validate request object
         if (request == null) {
-            throw new IllegalArgumentException("Request cannot be null");
+        	return DataStorageProcessResponse.nullRequest;
+//            throw new IllegalArgumentException("Request cannot be null");
         }
 
         int minK = request.getMinK();
@@ -39,13 +40,16 @@ public class DataStorageProcessAPIImpl implements DataStorageProcessAPI {
 
         // Validate k range values
         if (minK < Constants.MINIMUM_K) {
-            throw new IllegalArgumentException("minK must be at least " + Constants.MINIMUM_K);
+        	return DataStorageProcessResponse.improperKRange;
+//            throw new IllegalArgumentException("minK must be at least " + Constants.MINIMUM_K);
         }
         if (maxK < minK) {
-            throw new IllegalArgumentException("maxK must be greater than or equal to minK");
+        	return DataStorageProcessResponse.improperKRange;
+//            throw new IllegalArgumentException("maxK must be greater than or equal to minK");
         }
         if (maxK > Constants.MAXIMUM_K) {
-            throw new IllegalArgumentException("maxK cannot exceed " + Constants.MAXIMUM_K);
+        	return DataStorageProcessResponse.improperKRange;
+//            throw new IllegalArgumentException("maxK cannot exceed " + Constants.MAXIMUM_K);
         }
 
         String inputSource = request.getInputSource();
@@ -54,7 +58,8 @@ public class DataStorageProcessAPIImpl implements DataStorageProcessAPI {
         // Validate file paths if provided
         if (inputSource != null && !inputSource.isEmpty()) {
             if (!Files.exists(Paths.get(inputSource))) {
-                throw new IllegalArgumentException("Input file does not exist: " + inputSource);
+            	return DataStorageProcessResponse.IOFailure;
+//                throw new IllegalArgumentException("Input file does not exist: " + inputSource);
             }
         }
 
@@ -63,7 +68,8 @@ public class DataStorageProcessAPIImpl implements DataStorageProcessAPI {
                 // Verify we can create/write to the output file
                 Files.write(Paths.get(outputDestination), new byte[0]);
             } catch (IOException e) {
-                throw new IllegalArgumentException("Cannot write to output file: " + outputDestination);
+            	return DataStorageProcessResponse.IOFailure;
+//                throw new IllegalArgumentException("Cannot write to output file: " + outputDestination);
             }
         }
 
