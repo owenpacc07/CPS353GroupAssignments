@@ -14,8 +14,8 @@ public class ExceptionGuardingTest {
 	public void testEngineImpl() {
 		EngineProcessAPI api = new EngineProcessAPIImpl();
 		try {
-			Assertions.assertTrue(api.compute(null) == EngineOutput.nullPointer(), "Null pointer sentinel value was not returned.");
-			Assertions.assertTrue(api.compute(new EngineInput(1)) == EngineOutput.outOfBounds(), "K value out of bounds sentinel value was not returned.");
+			Assertions.assertTrue(api.compute(null) == EngineOutput.nullPointer, "Null pointer sentinel value was not returned.");
+			Assertions.assertTrue(api.compute(new EngineInput(1)) == EngineOutput.outOfBounds, "K value out of bounds sentinel value was not returned.");
 		} catch (Exception e) {
 			Assertions.assertTrue(false, "Uncaught Exception thrown into process boundary: " + e);
 		}

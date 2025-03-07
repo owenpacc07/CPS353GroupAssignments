@@ -28,11 +28,11 @@ public class DataStorageProcessResponse {
      * 				Sentinel Values
      */
     
-    public final static DataStorageProcessResponse nullRequest = 
+    public static final DataStorageProcessResponse nullRequest = 
     		new DataStorageProcessResponse(null);
-    public final static DataStorageProcessResponse improperKRange = 
+    public static final DataStorageProcessResponse improperKRange = 
     		new DataStorageProcessResponse(null);
-    public final static DataStorageProcessResponse IOFailure = 
+    public static final DataStorageProcessResponse IOFailure = 
     		new DataStorageProcessResponse(null);
     public boolean isSentinel() {
     	return this == nullRequest ||
