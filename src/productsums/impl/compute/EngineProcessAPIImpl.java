@@ -108,7 +108,6 @@ public class EngineProcessAPIImpl implements EngineProcessAPI {
 		}
 		throw new ArithmeticException("Product-sum number for " + k + " cannot be represented by an integer. Integer overflow has occured where should not be possible.");
 	}
-	
 	/*
 	 * 						Single line functions
 	 */
