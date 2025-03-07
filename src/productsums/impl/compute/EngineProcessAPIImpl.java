@@ -17,15 +17,15 @@ public class EngineProcessAPIImpl implements EngineProcessAPI {
     @Override
     public EngineOutput compute(EngineInput request) {
     	if (request == null) {
-    		return EngineOutput.nullPointer();
+    		return EngineOutput.nullPointer;
     	}
     	Result temp = null; 
     	try {
     		temp = calculateKNum(request.inputIndex());
     	} catch (ArithmeticException e) {
-    		return EngineOutput.incomputableK();
+    		return EngineOutput.incomputableK;
     	} catch (IllegalArgumentException e) {
-    		return EngineOutput.outOfBounds();
+    		return EngineOutput.outOfBounds;
     	}
     	List<Integer> ones = new LinkedList<>();
     	for (int i = 0; i < (temp.k - temp.factors.size()); i++) {
@@ -108,6 +108,7 @@ public class EngineProcessAPIImpl implements EngineProcessAPI {
 		}
 		throw new ArithmeticException("Product-sum number for " + k + " cannot be represented by an integer. Integer overflow has occured where should not be possible.");
 	}
+	
 	/*
 	 * 						Single line functions
 	 */
