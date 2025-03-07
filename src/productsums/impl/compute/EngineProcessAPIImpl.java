@@ -16,7 +16,16 @@ public class EngineProcessAPIImpl implements EngineProcessAPI {
 
     @Override
     public EngineOutput compute(EngineInput request) {
-    	Result temp = calculateKNum(request.inputIndex());
+    	if (request == null)
+    		return EngineOutput.nullPointer();
+    	Result temp = null; 
+    	try {
+    		temp = calculateKNum(request.inputIndex());
+    	} catch (ArithmeticException e) {
+    		return EngineOutput.incomputableK();
+    	} catch (IllegalArgumentException e) {
+    		return EngineOutput.outOfBounds();
+    	}
     	List<Integer> ones = new LinkedList<>();
     	for (int i = 0; i < (temp.k - temp.factors.size()); i++) {
     		ones.add(1);
@@ -30,7 +39,7 @@ public class EngineProcessAPIImpl implements EngineProcessAPI {
      * @param num
      * @return Contains a List of all combinations of two factors that multiply to num.
      */
-	public LinkedList<LinkedList<Integer>> factors(int num) {
+	private LinkedList<LinkedList<Integer>> factors(int num) {
 		LinkedList<LinkedList<Integer>> listOfFactors = new LinkedList<>();
 		int upperlimit = ((int) Math.sqrt(num))+1;
 		for (int i = 2; i < upperlimit; i++) {
@@ -48,7 +57,7 @@ public class EngineProcessAPIImpl implements EngineProcessAPI {
 	 * @param List of all sets of factors.
 	 * @return Whether or not the largest group of factors was split.
 	 */
-	public boolean splitLargest(LinkedList<LinkedList<Integer>> list) {
+	private boolean splitLargest(LinkedList<LinkedList<Integer>> list) {
 		LinkedList<Integer> largest = list.get(0);
 		list.remove(0);
 		if (isPrime(largest.getLast())) {
@@ -77,8 +86,11 @@ public class EngineProcessAPIImpl implements EngineProcessAPI {
 	 * The kth product-sum number must be under EngineProcessAPIImpl.MAX_SEARCH.
 	 * @throws IllegalArgumentException k must not be less than one. The algorithm is designed for natural numbers.
 	 */
-	public Result calculateKNum(int k) throws ArithmeticException, IllegalArgumentException{
-		if (k < 1) {
+	private Result calculateKNum(int k) throws ArithmeticException, IllegalArgumentException{
+		if (k < Constants.MINIMUM_K) {
+			throw new IllegalArgumentException("Product sum cannot be calculated for non-natural numbers.");
+		}
+		if (k > Constants.MAXIMUM_K) {
 			throw new IllegalArgumentException("Product sum cannot be calculated for non-natural numbers.");
 		}
 		int curr = 4;
@@ -99,21 +111,21 @@ public class EngineProcessAPIImpl implements EngineProcessAPI {
 	 * 						Single line functions
 	 */
     
-	public boolean isPrime(int i) {
+	private boolean isPrime(int i) {
 		return Constants.PRIMES.stream()
 				.anyMatch((item)->item == i);
 	}
-	public boolean allPrime(LinkedList<Integer> l) {
+	private boolean allPrime(LinkedList<Integer> l) {
 		return l.stream().allMatch((item)->isPrime(item));
 	}
-	public int sum(LinkedList<Integer> addends) {
+	private int sum(LinkedList<Integer> addends) {
 		return addends.stream().mapToInt(Integer::intValue).sum();
 	}
-	public void sort(LinkedList<LinkedList<Integer>> list) {
+	private void sort(LinkedList<LinkedList<Integer>> list) {
 		list.sort((l1,l2)->Integer.compare(sum(l2), sum(l1)));
 	}
-	public boolean validateK(LinkedList<Integer> factors, int k, int num) {
+	private boolean validateK(LinkedList<Integer> factors, int k, int num) {
 		return k - factors.size() == num - sum(factors);
 	}
-	public record Result(LinkedList<Integer> factors, int k, int curr) {}
+	private record Result(LinkedList<Integer> factors, int k, int curr) {}
 }
