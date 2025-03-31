@@ -1,4 +1,4 @@
-package productsums.smoketest.api.process;
+package productsums.dsp;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
