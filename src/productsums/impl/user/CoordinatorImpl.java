@@ -4,16 +4,10 @@ import productsums.api.user.UserAPI;
 import productsums.models.user.UserRequest;
 import productsums.models.user.UserResponse;
 import productsums.models.user.UserResponseModel;
+import productsums.api.compute.EngineProcessAPI;
 import productsums.api.process.DataStorageProcessAPI;
 import productsums.models.process.DataStorageProcessRequest;
 import productsums.models.process.DataStorageProcessResponse;
-import productsums.api.compute.EngineProcessAPI;
-import productsums.models.compute.EngineInput;
-import productsums.models.compute.EngineOutput;
-
-import java.util.List;
-import java.util.Map;
-import java.util.ArrayList;
 import java.util.Objects;
 
 public class CoordinatorImpl implements UserAPI {

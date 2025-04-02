@@ -1,4 +1,4 @@
-package productsums.test.impl.compute;
+package productsums.compute;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

@@ -1,4 +1,4 @@
-package productsums.integrationtest.impl;
+package productsums.compute;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

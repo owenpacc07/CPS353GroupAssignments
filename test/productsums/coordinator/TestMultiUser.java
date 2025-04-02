@@ -1,4 +1,4 @@
-package productsums.test.impl;
+package productsums.coordinator;
 
 import java.io.File;
 import java.io.IOException;
