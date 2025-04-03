@@ -28,11 +28,6 @@ public class TestMultiUser {
 
 	@Test
 	public void compareMultiAndSingleThreaded() throws Exception {
-		//blocks test from running to allow PR
-		if (0==0) {
-			return;
-		}
-		
 		int numThreads = 4;
 		List<TestUser> testUsers = new ArrayList<>();
 		for (int i = 0; i < numThreads; i++) {
@@ -42,10 +37,12 @@ public class TestMultiUser {
 		// Run single threaded
 		String singleThreadFilePrefix = "testMultiUser.compareMultiAndSingleThreaded.test.singleThreadOut.tmp";
 		for (int i = 0; i < numThreads; i++) {
-			File singleThreadedOut = 
-					new File(singleThreadFilePrefix + i);
+			File singleThreadedOut = new File(singleThreadFilePrefix + i);
 			singleThreadedOut.deleteOnExit();
 			testUsers.get(i).run(singleThreadedOut.getCanonicalPath());
+			// Verify files are written correctly
+			Assert.assertTrue("Output file should exist", singleThreadedOut.exists());
+			Assert.assertTrue("Output file should not be empty", singleThreadedOut.length() > 0);
 		}
 		
 		// Run multi threaded
@@ -69,11 +66,20 @@ public class TestMultiUser {
 			}
 		});
 		
-		
-		// Check that the output is the same for multi-threaded and single-threaded
+		// Enhanced verification
 		List<String> singleThreaded = loadAllOutput(singleThreadFilePrefix, numThreads);
 		List<String> multiThreaded = loadAllOutput(multiThreadFilePrefix, numThreads);
-		Assert.assertEquals(singleThreaded, multiThreaded);
+		Assert.assertFalse("Output should not be empty", singleThreaded.isEmpty());
+		Assert.assertEquals("Single and multi-threaded outputs should match", singleThreaded, multiThreaded);
+		
+		// Verify output format
+		for (String line : singleThreaded) {
+			Assert.assertTrue("Each line should contain input and output", line.contains(":"));
+			String[] parts = line.split(":");
+			Assert.assertEquals("Line should have input and output parts", 2, parts.length);
+			// Verify input part is a number
+			Integer.parseInt(parts[0].trim());
+		}
 	}
 
 	private List<String> loadAllOutput(String prefix, int numThreads) throws IOException {
