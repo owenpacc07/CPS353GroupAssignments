@@ -15,6 +15,10 @@ import productsums.models.process.DataStorageProcessResponseV2;
 public class DataStorageProcessImpl2 implements DataStorageProcessAPIV2{
 	@Override
 	public Optional<Integer> writeOutputs(DataStorageProcessRequestV2 request) {
+		if (request.errorResponse().isEmpty() && request.productSumResults().isEmpty()) {
+			return Optional.of(2);
+		}
+		
 		if (request.errorResponse().isPresent()) {
 			try {
 				request.os().write(request.errorResponse().get().getBytes());
@@ -23,10 +27,6 @@ public class DataStorageProcessImpl2 implements DataStorageProcessAPIV2{
 			}
 		}
 		
-		if (request.errorResponse().isEmpty() && request.productSumResults().isEmpty()) {
-			//Should not be possible for their to be nothing for the DSP to print to file
-			return Optional.of(2);
-		}
 		if (request.productSumResults().isEmpty()) {
 			return Optional.empty();
 		}
@@ -49,7 +49,7 @@ public class DataStorageProcessImpl2 implements DataStorageProcessAPIV2{
 		StringBuilder sb = new StringBuilder();
 		try {
 			while ((ch = is.read()) != -1) {
-				if (delimiters.contains(""+ch)) {
+				if (delimiters.contains(String.valueOf((char)ch))) {
 					if (sb.isEmpty()) {
 						return new DataStorageProcessResponseV2(Optional.empty(),Optional.of(1));
 					}
@@ -63,8 +63,19 @@ public class DataStorageProcessImpl2 implements DataStorageProcessAPIV2{
 					sb.append((char)ch);
 				}
 			}
+			if (!sb.isEmpty()) {
+				try {
+					args.add(Integer.parseInt(sb.toString()));
+					sb = new StringBuilder();
+				} catch (NumberFormatException e) {
+					return new DataStorageProcessResponseV2(Optional.empty(), Optional.of(2));
+				}
+			}
 		} catch (IOException e) {
 			return new DataStorageProcessResponseV2(Optional.empty(), Optional.of(3));
+		}
+		if (args.isEmpty()) {
+			return new DataStorageProcessResponseV2(Optional.empty(), Optional.of(4));
 		}
 		return new DataStorageProcessResponseV2(Optional.of(args), Optional.empty());
 	}

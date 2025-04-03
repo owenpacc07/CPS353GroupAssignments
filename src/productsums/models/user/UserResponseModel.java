@@ -21,4 +21,9 @@ public class UserResponseModel implements UserResponse {
 			return result;
 		}
 
+		@Override
+		public boolean isError() {
+			return result.contains("Error");
+		}
+
 	}

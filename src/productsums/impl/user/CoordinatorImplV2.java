@@ -70,69 +70,82 @@ public class CoordinatorImplV2 implements UserAPI {
 		DataStorageProcessResponseV2 response = null;
 		try {
 			response = dataStorage.readInputs(new FileInputStream(new File(request.getInputSource())), request.getDelimiters());
-		} catch (FileNotFoundException e) {//File should exist unless destroyed after our argument validation
+		} catch (FileNotFoundException e) {
+			return errorMessage("Input file destroyed or was not created before read operation");
 		}
 		
 		if (response.arguments().isEmpty()) {
-			//TODO behavior for detecting errors in DSP
+			switch (response.sentinel().get()) {
+			case 1:
+				return errorMessage("Delimiter placed before any input tokens, or general misinput");
+			case 2:
+				return errorMessage("Failed to parse a token, likely a non-numeric token");
+			case 3:
+				return errorMessage("Other exception while reading tokens");
+			case 4:
+				return errorMessage("Empty input file, counting as an error");
+			default:
+				break;
+			}
 		}
 		
 		Map<Integer,Integer> responses = new HashMap<>();
-		List<Future<?>> futures = new ArrayList<>();
+		List<Future<EngineOutput>> futures = new ArrayList<>();
 		
 		List<Integer> argumentList = response.arguments().get();
 		for(int i = 0; i< argumentList.size(); i++) {
 			final int index = i;
-			Future<?> future = executorService.submit(() -> {
+			Future<EngineOutput> future = executorService.submit(() -> {
 				int argument = argumentList.get(index);
-				EngineOutput eo = engineProcess.compute(new EngineInput(argument));
-				if(!eo.isSentinel()) {
-					//TODO behavior for detecting errors in Engine
-				}
+				return engineProcess.compute(new EngineInput(argument));
 			});
 			futures.add(future);
 		}
 		
 		//Check Threads are Finished 
-		for(int i = 0; i< futures.size(); i++) {
+		for(int i = 0; i < futures.size(); i++) {
 			try {
-				futures.get(i).get();
-			}catch (InterruptedException | ExecutionException e) {
-				return errorMessage("Error during the engine process.");
+				EngineOutput eo = futures.get(i).get();
+				if(eo.isSentinel()) {
+					if (eo == EngineOutput.incomputableK) {
+						return errorMessage("ProductSum for could not be computed by the engine");
+					} else if (eo == EngineOutput.nullPointer) {
+						return errorMessage("Null pointer exception occured in engine");
+					} else if (eo == EngineOutput.outOfBounds) {
+						return errorMessage("K value out of bounds.");
+					}
+				}
+				responses.put(response.arguments().get().get(i),eo.answer());
+			} catch (InterruptedException | ExecutionException e) {
+				return errorMessage("Worker threads were interrupted or faced other exceptions");
 			}
 		}
-		
-		/*
-		  V2 non multi-threaded implementation.
-		  
-		for (int i = 0; i < response.arguments().get().size(); i++) {
-			EngineOutput eo = engineProcess.compute(new EngineInput(response.arguments().get().get(i)));
-			if (eo.isSentinel()) {
-				//TODO behavior for detecting errors in Engine
-			}
-			responses.put(response.arguments().get().get(i),eo.answer());
-		}
-		*/
+
 		DataStorageProcessRequestV2 dspRequest = null;
 		try {
 			dspRequest = new DataStorageProcessRequestV2(Optional.of(responses),
 					new FileOutputStream(new File(request.getOutputSource())),
 					Optional.empty());
 		} catch (FileNotFoundException e) {
-			//File should exist unless destroyed after our argument validation
+			return errorMessage("Output file destroyed or was not created before write operation");
 		}
-		
 		
 		Optional<Integer> sentinel = dataStorage.writeOutputs(dspRequest);
 		if (sentinel.isPresent()) {
-			//TODO behavior for detecting errors in DSP
+			switch (sentinel.get()) {
+			case 1:
+				return errorMessage("Failed to write to output file");
+			case 2:
+				return errorMessage("Nothing to output, should be impossible");
+			default:
+				break;
+			}
 		}
 		return new UserResponseModel("Success");
 	}
 
 	// Generalizing error output for our system
 	private UserResponse errorMessage(String message) {
-
 		return new UserResponseModel("Error: " + message);
 	}
 	
