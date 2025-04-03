@@ -23,16 +23,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit; 
 
 public class CoordinatorImplV2 implements UserAPI {
 
 	private final DataStorageProcessAPIV2 dataStorage;
 	private final EngineProcessAPI engineProcess;
+	private final ExecutorService executorService; 
+	private static final int THREAD_POOL_SIZE = 4;
 
 	// Parameter Validation
 	public CoordinatorImplV2(DataStorageProcessAPIV2 dataStorage, EngineProcessAPI engineProcess) {
 		this.engineProcess = Objects.requireNonNull(engineProcess, "EngineProcess cannot be null.");
 		this.dataStorage = Objects.requireNonNull(dataStorage, "DataStorage cannot be null.");
+		this.executorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
 	}
 
 	@Override
@@ -51,8 +60,9 @@ public class CoordinatorImplV2 implements UserAPI {
 		if (!new File(request.getInputSource()).exists()) {
 			throw new IllegalArgumentException("Input file does not exist");
 		}
-		if (!new File(request.getOutputSource()).exists()) {
-			throw new IllegalArgumentException("Output file does not exist");
+		File outputFile = new File(request.getOutputSource());
+		if(!outputFile.getParentFile().exists()) {
+			throw new IllegalArgumentException("Output directory does not exist");
 		}
 		
 		
@@ -68,6 +78,33 @@ public class CoordinatorImplV2 implements UserAPI {
 		}
 		
 		Map<Integer,Integer> responses = new HashMap<>();
+		List<Future<?>> futures = new ArrayList<>();
+		
+		List<Integer> argumentList = response.arguments().get();
+		for(int i = 0; i< argumentList.size(); i++) {
+			final int index = i;
+			Future<?> future = executorService.submit(() -> {
+				int argument = argumentList.get(index);
+				EngineOutput eo = engineProcess.compute(new EngineInput(argument));
+				if(!eo.isSentinel()) {
+					//TODO behavior for detecting errors in Engine
+				}
+			});
+			futures.add(future);
+		}
+		
+		//Check Threads are Finished 
+		for(int i = 0; i< futures.size(); i++) {
+			try {
+				futures.get(i).get();
+			}catch (InterruptedException | ExecutionException e) {
+				return errorMessage("Error during the engine process.");
+			}
+		}
+		
+		/*
+		  V2 non multi-threaded implementation.
+		  
 		for (int i = 0; i < response.arguments().get().size(); i++) {
 			EngineOutput eo = engineProcess.compute(new EngineInput(response.arguments().get().get(i)));
 			if (eo.isSentinel()) {
@@ -75,7 +112,7 @@ public class CoordinatorImplV2 implements UserAPI {
 			}
 			responses.put(response.arguments().get().get(i),eo.answer());
 		}
-		
+		*/
 		DataStorageProcessRequestV2 dspRequest = null;
 		try {
 			dspRequest = new DataStorageProcessRequestV2(Optional.of(responses),
@@ -97,5 +134,17 @@ public class CoordinatorImplV2 implements UserAPI {
 	private UserResponse errorMessage(String message) {
 
 		return new UserResponseModel("Error: " + message);
+	}
+	
+	//Shutdown existing threads for testing/resource purposes
+	public void shutdown() {
+		executorService.shutdown();
+		try {
+			if(!executorService.awaitTermination(5, TimeUnit.SECONDS)) {
+				executorService.shutdownNow();
+			}
+		}catch(InterruptedException e) {
+			executorService.shutdownNow();
+		}
 	}
 }
