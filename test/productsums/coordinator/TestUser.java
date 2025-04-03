@@ -1,12 +1,9 @@
 package productsums.coordinator;
 
-import java.io.File;
 
 import productsums.api.user.UserAPI;
-import productsums.impl.user.CoordinatorImpl;
 import productsums.models.user.UserResponse;
 import productsums.models.user.UserRequest; 
-import productsums.models.user.UserResponseModel;
 
 
 public class TestUser {
@@ -15,10 +12,9 @@ public class TestUser {
 	public TestUser(UserAPI coordinator) {
 		this.coordinator = coordinator;
 	}
-
-	public void run(String outputPath) {
+	public UserResponse run(String outputPath) {
 		char delimiter = ';';
-		String inputPath = "test" + File.separatorChar + "testInputFile.test";
+		String inputPath = "test/productsums/resources/testInputFile.txt";
 		
 		//Anonymous Class UserRequest
 		UserRequest request = new UserRequest() {
@@ -39,8 +35,7 @@ public class TestUser {
 		};
 		
 		//Call User()
-		UserResponse response = coordinator.user(request);
-		System.out.println("Coordinator: " + response.getResult());
+		return coordinator.user(request);
 	}
 
 }
