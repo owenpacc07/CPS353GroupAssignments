@@ -15,24 +15,27 @@ import org.junit.jupiter.api.Test;
 
 import productsums.api.user.UserAPI;
 import productsums.impl.compute.EngineProcessAPIImpl;
-import productsums.impl.process.DataStorageProcessAPIImpl;
-import productsums.impl.user.CoordinatorImpl;
+import productsums.impl.process.DataStorageProcessImpl2;
+import productsums.impl.user.CoordinatorImplV2;
 
 public class TestMultiUser {
 	private UserAPI coordinator;
 	
 	@BeforeEach
 	public void initializeComputeEngine() {
-		this.coordinator = new CoordinatorImpl(new DataStorageProcessAPIImpl(new EngineProcessAPIImpl()));
+		this.coordinator = new CoordinatorImplV2(
+				new DataStorageProcessImpl2(),
+				new EngineProcessAPIImpl()
+		);
 	}
 
 	@Test
 	public void compareMultiAndSingleThreaded() throws Exception {
 		//blocks test from running to allow PR
-		if (0==0) {
+		/*if (0==0) {
 			return;
 		}
-		
+		*/
 		int numThreads = 4;
 		List<TestUser> testUsers = new ArrayList<>();
 		for (int i = 0; i < numThreads; i++) {
