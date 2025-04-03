@@ -84,6 +84,8 @@ public class CoordinatorImplV2 implements UserAPI {
 				return errorMessage("Other exception while reading tokens");
 			case 4:
 				return errorMessage("Empty input file, counting as an error");
+			default:
+				break;
 			}
 		}
 		
@@ -135,6 +137,8 @@ public class CoordinatorImplV2 implements UserAPI {
 				return errorMessage("Failed to write to output file");
 			case 2:
 				return errorMessage("Nothing to output, should be impossible");
+			default:
+				break;
 			}
 		}
 		return new UserResponseModel("Success");
