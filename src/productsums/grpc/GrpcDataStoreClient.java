@@ -1,3 +1,4 @@
+/*
 package productsums.grpc;
 
 import io.grpc.ManagedChannel;
@@ -136,3 +137,4 @@ public class GrpcDataStoreClient implements DataStorageProcessAPI, DataStoragePr
         }
     }
 }
+*/
