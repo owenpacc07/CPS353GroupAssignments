@@ -1,0 +1,25 @@
+syntax = "proto2"; 
+
+option java_package = "network.grpc"; 
+option java_outer_classname = "UserProto";
+
+package grpc;
+
+service UserService {
+
+	rpc User (UserRequest) returns (UserResponse);
+	
+ 	}
+ 
+message UserRequest {
+
+	optional string inputSource = 1;
+	optional string outputSource = 2;
+	optional string delimiters = 3;
+}
+
+message UserResponse {
+
+	optional bool isError = 1;
+	optional string result = 2;
+}

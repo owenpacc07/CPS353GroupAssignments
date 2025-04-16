@@ -26,7 +26,11 @@ public class Utils {
         } else if (f.getName().endsWith(".java") && !f.getName().contains("package-info")) {
             String className = f.getName().substring(0, f.getName().length() - 5);
             String fullName = packageName + (packageName.isEmpty() ? "" : ".") + className;
-            result.add(Utils.class.getClassLoader().loadClass(fullName));
+            try {
+            	result.add(Utils.class.getClassLoader().loadClass(fullName));
+            } catch (ClassNotFoundException e) {
+            	e.printStackTrace();
+            }
         }
     }
 }
