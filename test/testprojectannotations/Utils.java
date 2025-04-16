@@ -28,7 +28,9 @@ public class Utils {
             String fullName = packageName + (packageName.isEmpty() ? "" : ".") + className;
             try {
             	result.add(Utils.class.getClassLoader().loadClass(fullName));
-            } catch (ClassNotFoundException e) {}
+            } catch (ClassNotFoundException e) {
+            	e.printStackTrace();
+            }
         }
     }
 }

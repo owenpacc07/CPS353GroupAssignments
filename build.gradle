@@ -75,3 +75,5 @@ protobuf {
         }
     }
 }
+compileJava.dependsOn generateProto
+test.dependsOn generateProto
