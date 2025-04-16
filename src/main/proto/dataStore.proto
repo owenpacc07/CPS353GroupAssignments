@@ -1,0 +1,52 @@
+syntax = "proto2";
+
+package productsums.grpc;
+
+option java_package = "productsums.grpc";
+option java_multiple_files = true;
+
+message KeyValuePair {
+    required int32 key = 1;
+    required int32 value = 2;
+}
+
+message StoreRequest {
+    required int64 id = 1;
+    required int64 productSum = 2;
+    repeated int64 factors = 3;
+}
+
+message StoreResponse {
+    required bool success = 1;
+    optional string message = 2 [default = ""];
+}
+
+message RetrieveRequest {
+    required int64 id = 1;
+}
+
+message RetrieveResponse {
+    required int64 id = 1;
+    optional int64 productSum = 2 [default = 0];
+    repeated int64 factors = 3;
+    required bool found = 4;
+}
+
+message ProcessDataRequest {
+    required int32 minK = 1;
+    required int32 maxK = 2;
+    optional string inputSource = 3 [default = ""];
+    optional string outputSource = 4 [default = ""];
+}
+
+message ProcessDataResponse {
+    repeated KeyValuePair results = 1;
+    required bool isError = 2;
+    optional string errorMessage = 3 [default = ""];
+}
+
+service DataStoreService {
+    rpc Store (StoreRequest) returns (StoreResponse) {}
+    rpc Retrieve (RetrieveRequest) returns (RetrieveResponse) {}
+    rpc ProcessData (ProcessDataRequest) returns (ProcessDataResponse) {}
+}
