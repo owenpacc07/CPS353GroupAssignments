@@ -1,4 +1,4 @@
-package dataStore.grpc;
+package datastorage.grpc;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;

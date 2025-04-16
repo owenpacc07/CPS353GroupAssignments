@@ -2,7 +2,6 @@
 package productsums.impl.compute;
 
 import productsums.api.compute.EngineProcessAPI;
-import dataStore.grpc.DataStoreGrpcClient;
 import productsums.grpc.RetrieveResponse;
 import productsums.models.compute.EngineInput;
 import productsums.models.compute.EngineOutput;
@@ -11,6 +10,8 @@ import productsums.utils.Constants;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+
+import datastorage.grpc.DataStoreGrpcClient;
 
 public class EngineProcessAPIImpl implements EngineProcessAPI {
     private final DataStoreGrpcClient dataStoreClient;
