@@ -40,17 +40,12 @@ public class GrpcClient {
 	}
 
 	public static void runClient(Scanner sc, PrintWriter pw) throws Exception {
-		ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 9090).usePlaintext() // skip TLS for
-																									// local dev
+		ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 9090)
+				.usePlaintext() // skip TLS for														// local dev
 				.build();
 		// Call the service
-		UserServiceGrpc.UserServiceBlockingStub stub = UserServiceGrpc.newBlockingStub(channel);
-//        Message UserRequest {
-//
-//        	optional string inputSource = 1;
-//        	optional string outputSource = 2;
-//        	optional string delimiters = 3;
-//        }
+		UserServiceGrpc.UserServiceBlockingStub stub = 
+				UserServiceGrpc.newBlockingStub(channel);
 		while (true) {
 			pw.println("Print file contents, make a new request, or exit: (0/1/2)");
 			String userresponse = sc.nextLine();
@@ -98,8 +93,9 @@ public class GrpcClient {
 
 	public static void printFileTo(PrintWriter pw, String path) throws IllegalArgumentException, IOException {
 		File f = new File(path);
-		if (!f.exists())
+		if (!f.exists()) {
 			throw new IllegalArgumentException("File at path doesn't exist");
+		}
 		Scanner sc = new Scanner(f);
 		pw.println("Printing contents of " + path);
 		while (sc.hasNext()) {
@@ -111,13 +107,11 @@ public class GrpcClient {
 
 	public static void requestServer(PrintWriter pw, Scanner sc, UserServiceGrpc.UserServiceBlockingStub stub,
 			boolean fileInput, char output) throws Exception {
-		List<File> markedForDeletion = new LinkedList<>();
 		Builder request = UserProto.UserRequest.newBuilder();
 		if (!fileInput) {
 			pw.println("Type out input string: ");
 			String input = sc.nextLine();
 			File tempFile = generateTempFile();
-			markedForDeletion.add(tempFile);
 			PrintWriter tempWriter = new PrintWriter(tempFile);
 			tempWriter.print(input);
 			request.setInputSource(tempFile.getPath());
@@ -133,7 +127,6 @@ public class GrpcClient {
 			outFile = new File(sc.nextLine());
 		} else {
 			outFile = generateTempFile();
-			markedForDeletion.add(outFile);
 		}
 		request.setOutputSource(outFile.getPath());
 		pw.println("List delimiters. Don't seperate characters using other delimiters.\r\n"
@@ -152,9 +145,6 @@ public class GrpcClient {
 			}
 			pw.println("Done writing result string");
 			tempReader.close();
-		}
-		for (File f : markedForDeletion) {
-			System.out.println(f.delete());
 		}
 	}
 

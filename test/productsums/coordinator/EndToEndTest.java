@@ -30,7 +30,9 @@ public class EndToEndTest {
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw, true);
 		try {
-			GrpcClient.runClient(new Scanner("1\n" + "C\n" + "C\n" + "3;4;7\n" + ";\n" + "2\n"), pw);
+			GrpcClient.runClient(new Scanner("1\n" + "F\n" + "B\n"
+					+ "test/productsums/resources/E2Einput.txt\n"
+					+ "test/productsums/resources/E2Eoutput.txt\n" + ";\n" + "2\n"), pw);
 		} catch (Exception e) {
 			pw.println(e.getMessage());
 		}
