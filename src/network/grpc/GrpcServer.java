@@ -15,8 +15,6 @@ public class GrpcServer {
 		
 		Server server = ServerBuilder.forPort(9090).addService(new UserServiceImpl(userApi)).build().start();
 		
-		System.out.println("gRPC server started.");
-		
 		server.awaitTermination();
 	}
 }
