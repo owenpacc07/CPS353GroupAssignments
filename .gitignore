@@ -11,3 +11,6 @@ bin
 *.class
 pre-commit
 gradle.properties
+
+# Ignore temporary files
+src/resources/temp/*

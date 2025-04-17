@@ -2,17 +2,13 @@ package productsums.coordinator;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import network.grpc.GrpcClient;
 import network.grpc.GrpcServer;
-import productsums.api.user.UserAPI;
 
 public class EndToEndTest {
 	@Test
