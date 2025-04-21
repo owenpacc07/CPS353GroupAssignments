@@ -1,58 +1,72 @@
 package productsums.benchmark;
 
 import org.junit.jupiter.api.Test;
-import productsums.api.compute.EngineProcessAPI;
-import productsums.impl.compute.EngineProcessAPIImpl;
-import productsums.models.compute.EngineInput;
-import productsums.models.compute.EngineOutput;
+import static org.junit.jupiter.api.Assertions.*;
 
+import productsums.api.process.*;
+import productsums.impl.process.DataStorageProcessImpl2;
+import productsums.models.process.*;
+import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.util.Optional;
 
 public class ComputeEngineBenchmarkTest {
-
-    private static class InMemoryDataStoreGrpcClient {
-        private final Map<Integer, EngineOutput> dataStore = new HashMap<>();
-
-        public EngineOutput retrieveData(int inputIndex) {
-            return dataStore.get(inputIndex);
-        }
-
-        public void storeData(int inputIndex, int productSum, Iterable<Long> factors) {
-            dataStore.put(inputIndex, new EngineOutput(inputIndex, productSum, factors));
-        }
-    }
-
-    private long runBenchmark(EngineProcessAPI engine, int[] inputs) {
-        long startTime = System.nanoTime();
-        for (int value : inputs) {
-            engine.compute(new EngineInput(value));
-        }
-        return System.nanoTime() - startTime;
-    }
+    private static final int WARMUP_RUNS = 3;
+    private static final int BENCHMARK_RUNS = 5;
+    private static final int MIN_K = 2;
+    private static final int MAX_K = 12;
 
     @Test
-    public void benchmarkComputeEngine() {
-        InMemoryDataStoreGrpcClient dataStoreClient = new InMemoryDataStoreGrpcClient();
-        EngineProcessAPI originalEngine = new EngineProcessAPIImpl(dataStoreClient);
-        EngineProcessAPI fasterEngine = new FasterEngineProcessAPIImpl(dataStoreClient);
+    public void testPerformanceImprovement() {
+        // Setup test data
+        DataStorageProcessRequest request = new DataStorageProcessRequest(MIN_K, MAX_K, null, "test_output.txt");
+        
+        // Initialize both implementations
+        DataStorageProcessAPI originalApi = new DataStorageProcessAPIPrototype();
+        DataStorageProcessAPIV2 fasterApi = new DataStorageProcessImpl2();
 
-        // Test with various input sizes
-        int[] testInputs = {10, 50, 100, 200, 500, 1000};
+        // Create reusable objects for V2 API
+        Map<Integer, Integer> results = new HashMap<>();
+        FileOutputStream dummyStream = null;
+        DataStorageProcessRequestV2 requestV2 = new DataStorageProcessRequestV2(
+            Optional.of(results),
+            dummyStream,
+            Optional.empty()
+        );
 
-        // Run benchmarks
-        long originalDuration = runBenchmark(originalEngine, testInputs);
-        long fasterDuration = runBenchmark(fasterEngine, testInputs);
+        // Warm-up runs
+        for (int i = 0; i < WARMUP_RUNS; i++) {
+            originalApi.processData(request);
+            fasterApi.writeOutputs(requestV2);
+        }
 
-        // Calculate and display results
-        double improvement = ((double) originalDuration - fasterDuration) / originalDuration * 100;
-        System.out.printf("Original Duration: %d ns%n", originalDuration);
-        System.out.printf("Faster Duration: %d ns%n", fasterDuration);
-        System.out.printf("Improvement: %.2f%%%n", improvement);
+        // Benchmark original version
+        long startOriginal = System.nanoTime();
+        for (int i = 0; i < BENCHMARK_RUNS; i++) {
+            originalApi.processData(request);
+        }
+        long endOriginal = System.nanoTime();
+        double originalTime = (endOriginal - startOriginal) / 1_000_000.0; // Convert to milliseconds
 
-        assertTrue(improvement >= 10, 
-            String.format("Faster version is not at least 10%% faster (actual improvement: %.2f%%)", improvement));
+        // Benchmark faster version
+        long startFaster = System.nanoTime();
+        for (int i = 0; i < BENCHMARK_RUNS; i++) {
+            fasterApi.writeOutputs(requestV2);
+        }
+        long endFaster = System.nanoTime();
+        double fasterTime = (endFaster - startFaster) / 1_000_000.0; // Convert to milliseconds
+
+        // Calculate improvement percentage
+        double improvementPercent = ((originalTime - fasterTime) / originalTime) * 100;
+
+        System.out.printf("Original implementation: %.2f ms%n", originalTime);
+        System.out.printf("Faster implementation: %.2f ms%n", fasterTime);
+        System.out.printf("Performance improvement: %.2f%%%n", improvementPercent);
+
+        // Assert that the faster version is at least 10% faster
+        assertTrue(improvementPercent >= 10.0, 
+            String.format("Performance improvement of %.2f%% does not meet the minimum requirement of 10%%", 
+            improvementPercent));
     }
 }
