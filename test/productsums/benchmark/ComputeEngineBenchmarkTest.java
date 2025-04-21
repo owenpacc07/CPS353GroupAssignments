@@ -25,7 +25,7 @@ public class ComputeEngineBenchmarkTest {
         DataStorageProcessRequest request = new DataStorageProcessRequest(MIN_K, MAX_K, null, "test_output.txt");
         
         // Initialize both implementations
-        DataStorageProcessAPI originalApi = (DataStorageProcessAPI) new DataStorageProcessAPIPrototype();
+        DataStorageProcessAPI originalApi = new DataStorageProcessAPIPrototype();
         DataStorageProcessAPIV2 fasterApi = new DataStorageProcessImpl2();
 
         // Create reusable objects for V2 API
