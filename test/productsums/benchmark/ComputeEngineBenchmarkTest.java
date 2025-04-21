@@ -1,8 +1,7 @@
 package productsums.benchmark;
 
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
-
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import productsums.api.process.DataStorageProcessAPI;
 import productsums.api.process.DataStorageProcessAPIPrototype;
 import productsums.api.process.DataStorageProcessAPIV2;
