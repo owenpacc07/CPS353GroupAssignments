@@ -1,6 +1,7 @@
 package productsums.api.process;
 
-import productsums.models.process.*;
+import productsums.models.process.DataStorageProcessRequest;
+import productsums.models.process.DataStorageProcessResponse;
 import java.util.HashMap;
 import java.util.Map;
 

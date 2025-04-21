@@ -3,7 +3,9 @@ package productsums.benchmark;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-import productsums.api.process.*;
+import productsums.api.process.DataStorageProcessAPI;
+import productsums.api.process.DataStorageProcessAPIPrototype;
+import productsums.api.process.DataStorageProcessAPIV2;
 import productsums.impl.process.DataStorageProcessImpl2;
 import productsums.models.process.*;
 import java.io.FileOutputStream;
