@@ -2,12 +2,15 @@ package productsums.api.process;
 
 import productsums.models.process.DataStorageProcessRequest;
 import productsums.models.process.DataStorageProcessResponse;
+import projectannotations.ProcessAPIPrototype;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class DataStorageProcessAPIPrototype implements DataStorageProcessAPI {
     
     @Override
+    @ProcessAPIPrototype
     public DataStorageProcessResponse processData(DataStorageProcessRequest request) {
         int minK = request.getMinK();
         int maxK = request.getMaxK();
