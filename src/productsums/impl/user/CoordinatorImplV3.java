@@ -124,7 +124,7 @@ public class CoordinatorImplV3 implements UserAPIV2 {
     }
 
     private UserResponseV2 errorMessageFromSentinel(Optional<Integer> sentinel) {
-        if (sentinel.isEmpty()) return errorMessage("Unknown input error.");
+        if (sentinel.isEmpty()) {return errorMessage("Unknown input error.");}
         switch (sentinel.get()) {
             case 1: return errorMessage("Delimiter before input tokens or malformed input.");
             case 2: return errorMessage("Failed to parse a token (non-numeric?).");
