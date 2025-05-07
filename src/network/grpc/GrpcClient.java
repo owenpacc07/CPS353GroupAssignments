@@ -38,7 +38,6 @@ public class GrpcClient {
 
 		server.interrupt();
 	}
-
 	public static void runClient(Scanner sc, PrintWriter pw) throws Exception {
 		ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 9090)
 				.usePlaintext() // skip TLS for														// local dev
