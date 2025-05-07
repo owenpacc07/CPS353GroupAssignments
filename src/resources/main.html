@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="http://localhost:80/main.js"></script>
+</head>
+<body>
+    <!-- Replace Response Here -->
+    
+
+
+    <h2>Write Data to File</h2>
+    <form action="/fileWrite" method="POST">
+      <label for="filename">Filename:</label><br>
+      <input type="text" id="filename" name="filename" required><br><br>
+  
+      <label for="data">Data to write:</label><br>
+      <textarea id="data" name="data" rows="5" cols="40" required></textarea><br><br>
+  
+      <input type="submit" value="Write to File">
+    </form>
+  
+    <hr>
+  
+    <h2>Read Data from File</h2>
+    <form action="/fileRead" method="GET">
+      <label for="readfile">Filename:</label><br>
+      <input type="text" id="readfile" name="filename" required><br><br>
+  
+      <input type="submit" value="Read File">
+    </form>
+
+    <h2>Process Input</h2>
+
+    <hr>
+
+  <form action="/process" method="POST">
+    <!-- Input string or file path -->
+    <label for="input">Input:</label><br>
+    <textarea id="input" name="input" rows="4" cols="50" required></textarea><br><br>
+
+    <!-- True/False: Is input a file path -->
+    <label>Is this input a file path?</label><br>
+    <input type="radio" id="inputTypePath" name="inputIsPath" value="true" checked>
+    <label for="inputTypePath">Yes</label><br>
+    <input type="radio" id="inputTypeDirect" name="inputIsPath" value="false">
+    <label for="inputTypeDirect">No (direct input)</label><br><br>
+
+    <!-- Output file path -->
+    <label for="outputPath">Output File Path: (Optional)</label><br>
+    <input type="text" id="outputPath" name="outputPath" required><br><br>
+
+    <!-- Show output to user -->
+    <label>Show output to user?</label><br>
+    <input type="radio" id="showOutputYes" name="showOutput" value="true" checked>
+    <label for="showOutputYes">Yes</label><br>
+    <input type="radio" id="showOutputNo" name="showOutput" value="false">
+    <label for="showOutputNo">No</label><br><br>
+
+    <!-- Delimiter input -->
+    <label for="delimiter">Delimiter (e.g. comma, space, semicolon):</label><br>
+    <input type="text" id="delimiter" name="delimiter"><br><br>
+
+    <input type="submit" value="Submit">
+  </form>
+</body>
+</html>
