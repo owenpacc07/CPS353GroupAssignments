@@ -124,8 +124,7 @@ public class CoordinatorImplV3 implements UserAPIV2 {
     }
 
     private UserResponseV2 errorMessageFromSentinel(Optional<Integer> sentinel) {
-        if (sentinel.isEmpty()) 
-        {
+        if (sentinel.isEmpty()) {
         	return errorMessage("Unknown input error.");
         }
         switch (sentinel.get()) {
