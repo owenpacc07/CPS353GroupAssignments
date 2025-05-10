@@ -93,6 +93,7 @@ public class CoordinatorImplV3 implements UserAPIV2 {
             }
         }
 
+        //need a fix here, its trying to file output even when its unticked
         String outputString;
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

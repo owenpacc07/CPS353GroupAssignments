@@ -32,29 +32,4 @@ public class DataStoreServer {
             server.shutdown();
         }
     }
-
-    private static class DataStoreServiceImpl extends DataStoreServiceGrpc.DataStoreServiceImplBase {
-        private final ConcurrentHashMap<Long, Long> store = new ConcurrentHashMap<>();
-
-        @Override
-        public void store(StoreRequest request, StreamObserver<StoreResponse> responseObserver) {
-            store.put(request.getId(), request.getProductSum());
-            responseObserver.onNext(StoreResponse.newBuilder()
-                .setSuccess(true)
-                .build());
-            responseObserver.onCompleted();
-        }
-
-        @Override
-        public void retrieve(RetrieveRequest request, StreamObserver<RetrieveResponse> responseObserver) {
-            Long value = store.get(request.getId());
-            RetrieveResponse.Builder response = RetrieveResponse.newBuilder()
-                .setFound(value != null);
-            if (value != null) {
-                response.setProductSum(value);
-            }
-            responseObserver.onNext(response.build());
-            responseObserver.onCompleted();
-        }
-    }
 }

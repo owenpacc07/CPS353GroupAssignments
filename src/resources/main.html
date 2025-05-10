@@ -10,9 +10,9 @@
 
     <h2>Write Data to File</h2>
     <form action="/fileWrite" method="POST">
-      <label for="filename">Filename:</label><br>
-      <input type="text" id="filename" name="filename" required><br><br>
-  
+      <label for="writefile">Filename:</label><br>
+      <input type="text" id="writefile" name="filename" required><br><br>
+      
       <label for="data">Data to write:</label><br>
       <textarea id="data" name="data" rows="5" cols="40" required></textarea><br><br>
   
@@ -22,18 +22,16 @@
     <hr>
   
     <h2>Read Data from File</h2>
-    <form action="/fileRead" method="GET">
+    <form action="/fileRead" method="POST">
       <label for="readfile">Filename:</label><br>
       <input type="text" id="readfile" name="filename" required><br><br>
   
       <input type="submit" value="Read File">
     </form>
 
-    <h2>Process Input</h2>
-
     <hr>
-
-  <form action="/process" method="POST">
+    <h2>Process Input</h2>
+  <form action="/computeRequest" method="POST">
     <!-- Input string or file path -->
     <label for="input">Input:</label><br>
     <textarea id="input" name="input" rows="4" cols="50" required></textarea><br><br>
@@ -47,7 +45,7 @@
 
     <!-- Output file path -->
     <label for="outputPath">Output File Path: (Optional)</label><br>
-    <input type="text" id="outputPath" name="outputPath" required><br><br>
+    <input type="text" id="outputPath" name="outputPath"><br><br>
 
     <!-- Show output to user -->
     <label>Show output to user?</label><br>
